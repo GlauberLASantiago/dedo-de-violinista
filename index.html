@@ -1,1 +1,1495 @@
+<!DOCTYPE html>
+<html lang="pt-br">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dedo de violinista</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎻</text></svg>">
+    <script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+
+        :root {
+            /* Tema Bege Clássico / Warm Paper */
+            --bg: #eaddc5;
+            --card-bg: #fdf6e3;
+            --text-main: #3b3127;
+            --text-sub: #695a4a;
+            --header-grad: linear-gradient(120deg, #4a3b2c, #2e2318, #1a130d);
+            --ctrl-bg: #ece0cc;
+            --border: #d4c5ae;
+            --status-bg: #ece0cc;
+            --status-info: #d97706;
+            --status-ok: #16a34a;
+            --status-err: #dc2626;
+            --score-filter: invert(0);
+            --body-text: #3b3127;
+            --footer-text: #8b7b68;
+            --footer-link: #d97706;
+        }
+
+        .dark {
+            --bg: #1e1b18;
+            --card-bg: #2c2722;
+            --text-main: #f1ebd9;
+            --text-sub: #a89f91;
+            --header-grad: linear-gradient(120deg, #2b2013, #4a3824, #1a130d);
+            --ctrl-bg: #3a332d;
+            --border: #4d4439;
+            --status-bg: #3a332d;
+            --status-info: #b45309;
+            --status-ok: #064e3b;
+            --status-err: #7f1d1d;
+            --score-filter: invert(0);
+            --body-text: #f1ebd9;
+            --footer-text: #8b7b68;
+            --footer-link: #fbbf24;
+        }
+
+        .dark select option {
+            background-color: #1e1b18;
+            color: #f1ebd9;
+        }
+
+        .dark .part-name {
+            color: #f1ebd9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            padding: 20px 12px;
+            color: var(--body-text);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .card {
+            max-width: 1440px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, .08);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .hd {
+            background: var(--header-grad);
+            padding: 22px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .hd-title {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .hd-sub {
+            color: rgba(255, 255, 255, .7);
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .body {
+            padding: 24px 28px;
+            background: var(--card-bg);
+        }
+
+        .load-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #d97706; /* Laranja âmbar combinando com o bege */
+            color: #fff;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background .15s;
+            margin-bottom: 6px;
+            border: none;
+        }
+
+        .load-btn:hover {
+            background: #b45309;
+        }
+
+        .load-btn input {
+            display: none;
+        }
+
+        .fname {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-bottom: 12px;
+            min-height: 16px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            height: 38px;
+            padding: 0 18px;
+            border: none;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all .15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:disabled {
+            opacity: .3;
+            cursor: default;
+        }
+
+        .btn-play {
+            background: #22c55e;
+            color: #fff;
+        }
+
+        .btn-play:not(:disabled):hover {
+            background: #16a34a;
+        }
+
+        .btn-pause {
+            background: #f59e0b;
+            color: #fff;
+        }
+
+        .btn-pause:not(:disabled):hover {
+            background: #d97706;
+        }
+
+        .btn-stop {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn-stop:not(:disabled):hover {
+            background: #dc2626;
+        }
+
+        .bpm-wrap,
+        .met-wrap,
+        .rev-wrap,
+        .zoom-wrap,
+        .cursor-wrap,
+        .range-wrap {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--ctrl-bg);
+            border-radius: 9px;
+            padding: 0 14px;
+            height: 38px;
+            transition: background 0.3s;
+        }
+
+        .bpm-wrap label,
+        .met-wrap label,
+        .rev-wrap label,
+        .zoom-wrap label,
+        .cursor-wrap label,
+        .range-wrap label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            white-space: nowrap;
+        }
+
+        .cursor-wrap select {
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .cursor-wrap select:focus {
+            outline: none;
+        }
+
+        .bpm-wrap input[type="number"],
+        .rev-wrap input,
+        .zoom-wrap input {
+            width: 48px;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+            text-align: center;
+            font-family: inherit;
+        }
+
+        .met-wrap input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .bpm-wrap input:focus,
+        .rev-wrap input:focus,
+        .zoom-wrap input:focus {
+            outline: none;
+        }
+
+        /* ── Range controls ── */
+        .range-num {
+            width: 44px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+            text-align: center;
+            font-family: inherit;
+        }
+
+        .range-num:focus {
+            outline: none;
+        }
+
+        .range-num:disabled {
+            opacity: .35;
+        }
+
+        .range-sep {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-sub);
+            user-select: none;
+        }
+
+        /* ─── Fingerboard ─── */
+        .fingerboard-panel {
+            height: 200px;
+            max-width: 850px;
+            margin-bottom: 20px;
+            position: relative;
+            filter: drop-shadow(0 8px 10px rgba(0,0,0,0.3)); /* Sombra externa acompanha o clip-path */
+        }
+
+        /* O wrapper que une nomes, pestana e braço num só corte */
+        .fb-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            /* Afunilamento suave: de 7% no topo/fundo esquerdo até 0% na direita */
+            clip-path: polygon(0 7%, 100% 0, 100% 100%, 0 93%);
+            background: linear-gradient(to bottom, #111 0%, #3a3a3a 50%, #0a0a0a 100%);
+            border-radius: 4px;
+        }
+
+        .str-labels {
+            width: 60px;
+            background: #1c1917;
+            position: relative;
+            border-right: 2px solid #000;
+            z-index: 2;
+        }
+
+        .str-labels .lbl {
+            position: absolute;
+            left: 0; right: 0;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 700;
+            transition: all 0.15s ease;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.8);
+        }
+
+        .str-labels .lbl.active-open {
+            color: #fde047;
+            text-shadow: 0 0 10px #fde047, 0 0 20px #ca8a04, 0 1px 2px #000;
+            font-size: 18px; 
+        }
+
+        .fb-nut {
+            width: 14px;
+            position: relative;
+            background: linear-gradient(to right, #f5f5f4, #d6d3d1 40%, #a8a29e 90%, #78716c);
+            border-right: 2px solid #000;
+            box-shadow: inset -2px 0 4px rgba(0,0,0,0.3), 3px 0 6px rgba(0,0,0,0.6);
+            z-index: 2;
+        }
+
+        .fb-board {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fb-wood-pattern {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
+            pointer-events: none;
+        }
+
+        /* Fitas de iniciante (Guias) */
+        .fb-tape {
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 8px;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: inset 0 0 3px rgba(0,0,0,0.3), 1px 0 2px rgba(0,0,0,0.2);
+            transform: translateX(-50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .vb-string {
+            position: absolute;
+            left: 0; right: 0;
+            height: 20px;
+            transform-origin: left center;
+            z-index: 1;
+        }
+
+        /* Distribuição e angulação simulando a abertura até o cavalete de forma suave */
+        #vb-string-E { top: 28%; transform: translateY(-50%) rotate(-0.7deg); }
+        #vb-string-A { top: 43%; transform: translateY(-50%) rotate(-0.2deg); }
+        #vb-string-D { top: 57%; transform: translateY(-50%) rotate(0.2deg); }
+        #vb-string-G { top: 72%; transform: translateY(-50%) rotate(0.7deg); }
+
+        .str-base {
+            position: absolute;
+            top: 50%; left: 0; right: 0;
+            transform: translateY(-50%);
+            box-shadow: 0 4px 4px rgba(0,0,0,0.6);
+        }
+
+        .str-e { height: 1.5px; background: linear-gradient(to bottom, #ffffff, #9ca3af, #ffffff); }
+        .str-a { height: 2.5px; background: linear-gradient(to bottom, #e5e7eb, #6b7280, #e5e7eb); }
+        .str-d { height: 4px; background: linear-gradient(to bottom, #d1d5db, #4b5563, #d1d5db); }
+        .str-g { height: 5.5px; background: linear-gradient(to bottom, #9ca3af, #374151, #9ca3af); }
+
+        @keyframes stringVibrate {
+            0% { transform: translateY(-50%); }
+            33% { transform: translateY(calc(-50% - 1.5px)); }
+            66% { transform: translateY(calc(-50% + 1.5px)); }
+            100% { transform: translateY(-50%); }
+        }
+
+        .string-active {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            height: 3px;
+            background: #ef4444;
+            transform: translateY(-50%);
+            box-shadow: 0 0 10px #ef4444, 0 0 5px #fca5a5;
+            display: none;
+            z-index: 2;
+            animation: stringVibrate 0.05s infinite linear;
+        }
+
+        .finger-dot {
+            position: absolute;
+            top: 50%;
+            width: 26px; height: 26px;
+            background: radial-gradient(circle at 30% 30%, #fef08a, #eab308 60%, #a16207);
+            border: 1px solid #713f12;
+            color: #281500;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 15px;
+            z-index: 3;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,255,255,0.4);
+            text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+        }
+
+        #score {
+            overflow-x: auto;
+            filter: var(--score-filter);
+            transition: filter 0.3s;
+            background: #fffdf8; /* Tom suave off-white para pauta combinando com bege */
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 15px;
+            border: 1px solid var(--border);
+        }
+
+        #score svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .credits-footer {
+            max-width: 1080px;
+            margin: 24px auto 0;
+            text-align: center;
+            font-size: 13px;
+            color: var(--footer-text);
+            line-height: 1.6;
+        }
+
+        .credits-footer a {
+            color: var(--footer-link);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .credits-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .inst-guide {
+            max-width: 1080px;
+            margin: 32px auto 0;
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, .04);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .inst-guide h3 {
+            font-size: 16px;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .inst-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .step {
+            font-size: 13px;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        .step-num {
+            display: inline-flex;
+            width: 24px;
+            height: 24px;
+            background: #d97706; /* Combina com os novos tons do app */
+            color: #fff;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .step b {
+            color: var(--text-main);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .icon-svg {
+            display: inline-block;
+            vertical-align: middle;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+            margin-top: -2px;
+        }
+
+        .btn .icon-svg {
+            margin-right: 2px;
+        }
+
+        .hd-icon .icon-svg {
+            width: 28px;
+            height: 28px;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="hd">
+            <div>
+                <div class="hd-title">Dedo de violinista</div>
+                <div class="hd-sub">Visualizador Interativo de Partituras com Guia de Dedilhado para Violino</div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" title="Alternar tema">
+                <svg id="themeIconSun" class="icon-svg" style="display:none;" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg id="themeIconMoon" class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div class="body">
+            <label class="load-btn">
+                <svg class="icon-svg" style="width:16px;height:16px;margin-right:6px;" viewBox="0 0 24 24">
+                    <path
+                        d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.69.9H18a2 2 0 0 1 2 2v2">
+                    </path>
+                </svg>
+                <span>Carregar partitura</span>
+                <input type="file" id="fi" accept=".xml,.musicxml,.mxl">
+            </label>
+
+            <div class="fname" id="fname">Nenhum arquivo selecionado</div>
+
+            <div class="controls">
+                <button class="btn btn-play" id="bp" disabled>
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Play
+                </button>
+                <button class="btn btn-pause" id="bpa" disabled>
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
+                        <rect x="6" y="4" width="4" height="16"></rect>
+                        <rect x="14" y="4" width="4" height="16"></rect>
+                    </svg>
+                    Pause
+                </button>
+                <button class="btn btn-stop" id="bs" disabled>
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
+                        <rect x="4" y="4" width="16" height="16"></rect>
+                    </svg>
+                    Stop
+                </button>
+
+                <div class="bpm-wrap">
+                    <label for="bpm">BPM</label>
+                    <input type="number" id="bpm" value="100" min="20" max="400">
+                </div>
+
+                <div class="met-wrap">
+                    <label for="metCheck">Metrônomo</label>
+                    <input type="checkbox" id="metCheck">
+                </div>
+
+                <div class="rev-wrap">
+                    <label for="reverbAmt">Reverber</label>
+                    <input type="number" id="reverbAmt" value="15" min="0" max="100">
+                </div>
+
+                <div class="zoom-wrap">
+                    <label for="zoomInp">Zoom %</label>
+                    <input type="number" id="zoomInp" value="100" min="40" max="300" step="5">
+                </div>
+
+                <div class="cursor-wrap">
+                    <label for="cursorMode">Cursor</label>
+                    <select id="cursorMode" title="Modo de destaque do cursor (Nota ou Compasso)">
+                        <option value="0">Nota</option>
+                        <option value="3" selected>Compasso</option>
+                        <option value="-1">Sem cursor</option>
+                    </select>
+                </div>
+
+                <div class="range-wrap" title="Definir trecho para execução">
+                    <label>Trecho</label>
+                    <input type="number" id="rangeFrom" class="range-num" value="1" min="1" title="Compasso inicial" disabled>
+                    <span class="range-sep">–</span>
+                    <input type="number" id="rangeTo" class="range-num" value="1" min="1" title="Compasso final" disabled>
+                </div>
+
+                <div id="partsPanel" class="parts-panel" style="display:none;"></div>
+            </div>
+
+            <!-- Fingerboard Virtual Atualizado -->
+            <div class="fingerboard-panel">
+                <div class="fb-wrapper">
+                    <div class="str-labels">
+                        <div class="lbl" id="lbl-E" style="top: 28%;">Mi</div>
+                        <div class="lbl" id="lbl-A" style="top: 43%;">Lá</div>
+                        <div class="lbl" id="lbl-D" style="top: 57%;">Ré</div>
+                        <div class="lbl" id="lbl-G" style="top: 72%;">Sol</div>
+                    </div>
+                    <div class="fb-nut"></div>
+                    <div class="fb-board">
+                        <div class="fb-wood-pattern"></div>
+                        <div class="fb-tape" style="left: 25%;"></div>
+                        <div class="fb-tape" style="left: 50%;"></div>
+                        <div class="fb-tape" style="left: 62.5%;"></div>
+                        <div class="fb-tape" style="left: 87.5%;"></div>
+
+                        <div class="vb-string" id="vb-string-E">
+                            <div class="str-base str-e"></div>
+                            <div class="string-active"></div>
+                            <div class="finger-dot"></div>
+                        </div>
+                        <div class="vb-string" id="vb-string-A">
+                            <div class="str-base str-a"></div>
+                            <div class="string-active"></div>
+                            <div class="finger-dot"></div>
+                        </div>
+                        <div class="vb-string" id="vb-string-D">
+                            <div class="str-base str-d"></div>
+                            <div class="string-active"></div>
+                            <div class="finger-dot"></div>
+                        </div>
+                        <div class="vb-string" id="vb-string-G">
+                            <div class="str-base str-g"></div>
+                            <div class="string-active"></div>
+                            <div class="finger-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="score"></div>
+        </div>
+    </div>
+
+    <section class="inst-guide">
+        <h3>
+            <svg class="icon-svg" style="width:18px;height:18px;color:#d97706;" viewBox="0 0 24 24">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Guia para Professores
+        </h3>
+        <div class="inst-steps">
+            <div class="step"><span class="step-num">1</span><b>Exportar XML</b>No MuseScore (ou similar), exporte sua
+                partitura em formato MusicXML (.musicxml ou .xml).</div>
+            <div class="step"><span class="step-num">2</span><b>Carregar & Ajustar</b>Use o botão azul acima para
+                carregar o arquivo. Ajuste Andamento (BPM), Reverberação e Zoom conforme desejado.
+            </div>
+            <div class="step"><span class="step-num">3</span><b>Trecho</b>Defina o compasso inicial e final em
+                <b>Trecho</b> para executar apenas uma parte da música.
+            </div>
+        </div>
+        <div class="inst-obs"
+            style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);font-size:13.5px;line-height:1.6;color:var(--text-sub);">
+            <p><b>⚠️ Nota:</b> O Dedo de violinista é uma ferramenta focada em operações básicas e acessibilidade. Todos os canais e vozes estão pré-configurados automaticamente para soar como <b>Violino</b>. O diagrama do braço exibe as digitações na <b>1ª posição</b> para ajudar na visualização inicial.</p>
+        </div>
+    </section>
+
+    <footer class="credits-footer">
+        <strong>Dedo de violinista</strong> &mdash; Desenvolvido pelo professor <strong>Glauber Santiago</strong> &mdash;
+        DAC/UFSCar<br>
+        <a href="https://servidores.ufscar.br/glauber/" target="_blank">servidores.ufscar.br/glauber/</a> &bull;
+        <a href="https://sites.google.com/view/glauberia" target="_blank">sites.google.com/view/glauberia</a>
+    </footer>
+
+    <script>
+        (function () {
+            /* ── Tema ── */
+            var currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            if (currentTheme === 'dark') document.documentElement.classList.add('dark');
+            updateThemeIcons(currentTheme);
+            function updateThemeIcons(theme) {
+                var sun = document.getElementById('themeIconSun'), moon = document.getElementById('themeIconMoon');
+                if (theme === 'dark') { sun.style.display = 'block'; moon.style.display = 'none'; }
+                else { sun.style.display = 'none'; moon.style.display = 'block'; }
+            }
+            document.getElementById('themeToggle').onclick = function () {
+                var isDark = document.documentElement.classList.toggle('dark');
+                var newTheme = isDark ? 'dark' : 'light';
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcons(newTheme);
+            };
+
+            var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay('score', {
+                backend: 'svg', autoResize: true, drawTitle: true, followCursor: false
+            });
+
+            /* ─── Estado global ──────────────────────────────────────────────── */
+            var partInsts = [], partConfigs = [], partGains = [];
+            var evs = [], ac = null, sc = [], sat = 0, pat = 0, run = false, rawXml = '';
+            var cursorTimer = null, cursorSteps = [], cursorIndex = 0;
+            var inputGain = null, masterGain = null, dryGain = null, wetGain = null, convolver = null;
+            var playbackEndTimer = null, pieceEnd = 0;
+            var scoreClickTimer = null;
+            var cursorStepsCache = { bpm: null, xml: null, mode: 3 };
+            var totalMeasures = 0;
+
+            /* ─── Fingerboard Logic ─── */
+            function getViolinFingering(midi) {
+                // Tabela baseada em semitons a partir da corda solta para a 1ª posição:
+                var fArr = [0, 1, 1, 2, 2, 3, 3, 4];
+                
+                if (midi >= 76 && midi <= 83) return { string: 'E', semi: midi - 76, finger: fArr[midi - 76] };
+                if (midi >= 69 && midi <= 75) return { string: 'A', semi: midi - 69, finger: fArr[midi - 69] };
+                if (midi >= 62 && midi <= 68) return { string: 'D', semi: midi - 62, finger: fArr[midi - 62] };
+                if (midi >= 55 && midi <= 61) return { string: 'G', semi: midi - 55, finger: fArr[midi - 55] };
+                
+                return null;
+            }
+
+            function updateFingerboard(activeMidis) {
+                var strings = ['E', 'A', 'D', 'G'];
+                var state = { E: null, A: null, D: null, G: null };
+                
+                activeMidis.forEach(function(midi) {
+                    var f = getViolinFingering(midi);
+                    if (f) state[f.string] = f;
+                });
+
+                strings.forEach(function(s) {
+                    var el = document.getElementById('vb-string-' + s);
+                    var lbl = document.getElementById('lbl-' + s);
+                    if (!el) return;
+                    var dot = el.querySelector('.finger-dot');
+                    var activeLine = el.querySelector('.string-active');
+                    
+                    if (state[s]) {
+                        var semi = state[s].semi;
+                        var finger = state[s].finger;
+                        if (semi === 0) {
+                            dot.style.display = 'none';
+                            activeLine.style.display = 'block';
+                            activeLine.style.left = '0%';
+                            if (lbl) lbl.classList.add('active-open');
+                        } else {
+                            var leftPct = semi * 12.5; 
+                            dot.style.display = 'flex';
+                            dot.style.left = leftPct + '%';
+                            dot.textContent = finger;
+                            
+                            activeLine.style.display = 'block';
+                            activeLine.style.left = leftPct + '%';
+                            if (lbl) lbl.classList.remove('active-open');
+                        }
+                    } else {
+                        dot.style.display = 'none';
+                        activeLine.style.display = 'none';
+                        if (lbl) lbl.classList.remove('active-open');
+                    }
+                });
+            }
+
+            /* ─── Range state ─────────────────────────────────────────── */
+            var rangeFrom = 1, rangeTo = 1;
+            var measureTimeMap = {};
+            var minMeasureNumber = 1;
+            var maxMeasureNumber = 1;
+
+            function buildMeasureTimeMap() {
+                measureTimeMap = {};
+                minMeasureNumber = 1;
+                maxMeasureNumber = 1;
+                if (!osmd || !osmd.cursor) return;
+                var bpm = +document.getElementById('bpm').value || 100;
+                var beatLen = 60 / bpm;
+                try {
+                    osmd.cursor.reset();
+                    var it = osmd.cursor.Iterator;
+                    var lastM = -1;
+                    while (!it.EndReached) {
+                        var mIdx = it.CurrentMeasureIndex;
+                        if (mIdx !== lastM) {
+                            var timeObj = it.currentTimeStamp || it.CurrentTimeStamp;
+                            var real = timeObj ? (typeof timeObj.realValue !== 'undefined' ? timeObj.realValue : (timeObj.RealValue || 0)) : 0;
+                            var measureNumber = mIdx + 1;
+                            if (osmd.Sheet && osmd.Sheet.SourceMeasures && osmd.Sheet.SourceMeasures.length > mIdx) {
+                                var srcMeasure = osmd.Sheet.SourceMeasures[mIdx];
+                                if (srcMeasure && srcMeasure.MeasureNumber !== undefined) {
+                                    measureNumber = srcMeasure.MeasureNumber;
+                                }
+                            }
+                            measureTimeMap[measureNumber] = real * 4 * beatLen;
+                            if (lastM === -1) minMeasureNumber = measureNumber;
+                            maxMeasureNumber = measureNumber;
+                            lastM = mIdx;
+                        }
+                        it.moveToNext();
+                    }
+                    osmd.cursor.reset();
+                    totalMeasures = maxMeasureNumber;
+                } catch (e) {
+                    console.warn('buildMeasureTimeMap error:', e);
+                }
+            }
+
+            function updateRangeInputs() {
+                var fromEl = document.getElementById('rangeFrom');
+                var toEl = document.getElementById('rangeTo');
+                fromEl.min = minMeasureNumber;
+                fromEl.max = maxMeasureNumber;
+                toEl.min = minMeasureNumber;
+                toEl.max = maxMeasureNumber;
+                fromEl.value = minMeasureNumber;
+                toEl.value = maxMeasureNumber;
+                rangeFrom = minMeasureNumber;
+                rangeTo = maxMeasureNumber;
+            }
+
+            function getRangeStartTime() {
+                var from = Math.max(minMeasureNumber, Math.min(rangeFrom, maxMeasureNumber));
+                return measureTimeMap[from] || 0;
+            }
+
+            function getRangeEndTime() {
+                var to = Math.max(rangeFrom, Math.min(rangeTo, maxMeasureNumber));
+                var next = measureTimeMap[to + 1];
+                return (next !== undefined) ? next : pieceEnd;
+            }
+
+            document.getElementById('rangeFrom').addEventListener('change', function () {
+                var v = parseInt(this.value, 10) || minMeasureNumber;
+                if (v < minMeasureNumber) v = minMeasureNumber;
+                if (v > maxMeasureNumber) v = maxMeasureNumber;
+                this.value = v;
+                rangeFrom = v;
+                if (rangeTo < rangeFrom) {
+                    rangeTo = rangeFrom;
+                    document.getElementById('rangeTo').value = rangeTo;
+                }
+            });
+            document.getElementById('rangeTo').addEventListener('change', function () {
+                var v = parseInt(this.value, 10) || maxMeasureNumber;
+                if (v < minMeasureNumber) v = minMeasureNumber;
+                if (v > maxMeasureNumber) v = maxMeasureNumber;
+                this.value = v;
+                rangeTo = v;
+                if (rangeFrom > rangeTo) {
+                    rangeFrom = rangeTo;
+                    document.getElementById('rangeFrom').value = rangeFrom;
+                }
+            });
+
+            /* Variáveis do Scheduler */
+            var nextEventIdx = 0, nextMetTime = 0, schedulerTimer = null;
+            var lookahead = 0.1, scheduleAheadTime = 0.5;
+
+            function setStatus(msg, cls) {
+                // Visor de status removido
+            }
+
+            function getReverbAmount() {
+                var v = +document.getElementById('reverbAmt').value;
+                return isNaN(v) ? 25 : Math.max(0, Math.min(100, v));
+            }
+
+            function extractTempoFromXml(xml) {
+                var m = xml.match(/<sound[^>]+\btempo="([\d.]+)"/);
+                if (!m) return null;
+                var v = Math.round(parseFloat(m[1]));
+                return (v >= 20 && v <= 400) ? v : null;
+            }
+
+            function extractMetaFromXml(xml) {
+                var title = '', m;
+                m = xml.match(/<work-title>([\s\S]*?)<\/work-title>/);
+                if (!m) m = xml.match(/<movement-title>([\s\S]*?)<\/movement-title>/);
+                if (m) title = m[1].trim();
+                return { title: title };
+            }
+
+            function getMetronomeBeatLen() {
+                var bpm = +document.getElementById('bpm').value || 100;
+                var base = 60 / bpm;
+                if (!rawXml) return base;
+                var beatsMatch = rawXml.match(/<beats>(\d+)<\/beats>/);
+                var beatTypeMatch = rawXml.match(/<beat-type>(\d+)<\/beat-type>/);
+                if (!beatsMatch || !beatTypeMatch) return base;
+                var beats = +beatsMatch[1];
+                var beatType = +beatTypeMatch[1];
+                if ((beatType === 8 || beatType === 16) && beats % 3 === 0) return base * 1.5;
+                return base;
+            }
+
+            function createImpulseResponse(audioContext, seconds, decay) {
+                var rate = audioContext.sampleRate, length = rate * seconds;
+                var impulse = audioContext.createBuffer(2, length, rate);
+                for (var c = 0; c < 2; c++) {
+                    var ch = impulse.getChannelData(c);
+                    for (var i = 0; i < length; i++)
+                        ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+                }
+                return impulse;
+            }
+
+            function setupFx() {
+                if (!ac) return;
+                inputGain = ac.createGain();
+                masterGain = ac.createGain();
+                dryGain = ac.createGain();
+                wetGain = ac.createGain();
+                convolver = ac.createConvolver();
+                convolver.buffer = createImpulseResponse(ac, 1.5, 2.5);
+                var compressor = ac.createDynamicsCompressor();
+                compressor.threshold.value = -18; compressor.knee.value = 8;
+                compressor.ratio.value = 6; compressor.attack.value = 0.003;
+                compressor.release.value = 0.18;
+                inputGain.connect(dryGain);
+                inputGain.connect(convolver);
+                convolver.connect(wetGain);
+                dryGain.connect(masterGain);
+                wetGain.connect(masterGain);
+                masterGain.connect(compressor);
+                compressor.connect(ac.destination);
+                masterGain.gain.value = 2.0;
+                updateReverb();
+            }
+
+            function updateReverb() {
+                if (!dryGain || !wetGain) return;
+                var amt = getReverbAmount() / 100;
+                dryGain.gain.value = 1 - (amt * 0.45);
+                wetGain.gain.value = amt * 1.35;
+            }
+
+            function playMetronomeClick(when, dest) {
+                if (!ac) return [];
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1800, when); 
+                osc.frequency.exponentialRampToValueAtTime(200, when + 0.05);
+                gain.gain.setValueAtTime(0.2, when);
+                gain.gain.exponentialRampToValueAtTime(0.01, when + 0.05);
+                osc.connect(gain);
+                gain.connect(dest);
+                osc.start(when);
+                osc.stop(when + 0.05);
+                return [{ stop: function() { try { osc.stop(); } catch(e){} } }];
+            }
+
+            /* ─── Parts ──────────────────────────────────────────────────────── */
+            function initParts() {
+                partConfigs = [];
+                var parts = osmd.Sheet.Instruments || [];
+                parts.forEach(function (inst, idx) {
+                    var name = 'Part ' + (idx + 1);
+                    if (inst.NameLabel && inst.NameLabel.text) name = inst.NameLabel.text;
+                    else if (inst.name) name = inst.name;
+                    partConfigs.push({ name: name, program: 'violin', vol: 100, oct: 0 });
+                });
+
+                buildMeasureTimeMap();
+                updateRangeInputs();
+                document.getElementById('rangeFrom').disabled = false;
+                document.getElementById('rangeTo').disabled = false;
+
+                renderPartsPanel();
+                loadAllInstruments();
+            }
+
+            function renderPartsPanel() {
+                var p = document.getElementById('partsPanel');
+                if (p) {
+                    p.style.display = 'none';
+                    p.innerHTML = '';
+                }
+            }
+
+            async function loadAllInstruments() {
+                if (!ac || ac.state === 'closed') { ac = new (window.AudioContext || window.webkitAudioContext)(); setupFx(); }
+                stopScheduled(); clearPlaybackEndTimer();
+                
+                partInsts = []; partGains = [];
+                
+                var promises = partConfigs.map(async function (cfg, idx) {
+                    var gain = ac.createGain(); gain.connect(inputGain); partGains[idx] = gain;
+                    var sf = await Soundfont.instrument(ac, cfg.program, {
+                        soundfont: 'FluidR3_GM', destination: gain,
+                        nameToUrl: function (n, f) { return 'https://gleitz.github.io/midi-js-soundfonts/' + f + '/' + n + '-mp3.js'; }
+                    });
+                    partInsts[idx] = sf;
+                });
+                await Promise.all(promises);
+                updatePartMix(); updateReverb();
+                document.getElementById('bp').disabled = false;
+            }
+
+            function updatePartMix() {
+                partConfigs.forEach(function (cfg, idx) {
+                    var finalGain = (cfg.vol || 100) / 100;
+                    if (partGains[idx]) partGains[idx].gain.setTargetAtTime(finalGain, ac.currentTime, 0.05);
+                });
+            }
+
+            function stopScheduled() {
+                sc.forEach(function (n) { try { n.stop(); } catch (_) { } });
+                sc = [];
+                if (schedulerTimer) { clearTimeout(schedulerTimer); schedulerTimer = null; }
+            }
+            function clearCursorTimer() {
+                if (cursorTimer) { cancelAnimationFrame(cursorTimer); cursorTimer = null; }
+            }
+            function clearPlaybackEndTimer() {
+                if (playbackEndTimer) { clearTimeout(playbackEndTimer); playbackEndTimer = null; }
+            }
+
+            function resetCursorToStart() {
+                clearCursorTimer();
+                updateFingerboard([]);
+                if (!osmd || !osmd.cursor) return;
+                try {
+                    var mode = +document.getElementById('cursorMode').value;
+                    if (mode === -1) { osmd.cursor.hide(); cursorIndex = 0; return; }
+                    osmd.cursor.cursorOptions.type = mode;
+                    osmd.cursor.reset(); osmd.cursor.show();
+                    cursorIndex = 0;
+                    if (rangeFrom > minMeasureNumber && mode === 3) {
+                        while (!osmd.cursor.Iterator.EndReached) {
+                            var mIdx = osmd.cursor.Iterator.CurrentMeasureIndex;
+                            var currentMeasureNumber = mIdx + 1;
+                            if (osmd.Sheet && osmd.Sheet.SourceMeasures && osmd.Sheet.SourceMeasures.length > mIdx) {
+                                var srcMeasure = osmd.Sheet.SourceMeasures[mIdx];
+                                if (srcMeasure && srcMeasure.MeasureNumber !== undefined) {
+                                    currentMeasureNumber = srcMeasure.MeasureNumber;
+                                }
+                            }
+                            if (currentMeasureNumber >= rangeFrom) break;
+                            osmd.cursor.next();
+                        }
+                    }
+                } catch (_) { }
+            }
+
+            function extractCursorSteps() {
+                if (!osmd || !osmd.cursor) return;
+                var bpm = +document.getElementById('bpm').value || 100;
+                var mode = +document.getElementById('cursorMode').value;
+                if (mode === -1) { cursorSteps = []; return; }
+                if (cursorStepsCache.bpm === bpm && cursorStepsCache.xml === rawXml && cursorStepsCache.mode === mode && cursorSteps.length > 0) return;
+                cursorSteps = [];
+                try {
+                    osmd.cursor.reset();
+                    osmd.cursor.cursorOptions.type = mode;
+                    var iterator = osmd.cursor.Iterator;
+                    var lastM = -1;
+                    while (!iterator.EndReached) {
+                        var mIdx = iterator.CurrentMeasureIndex;
+                        if (mode === 0 || mIdx !== lastM) {
+                            var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
+                            var real = timeObj ? (typeof timeObj.realValue !== 'undefined' ? timeObj.realValue : (timeObj.RealValue || 0)) : 0;
+                            var measureNumber = mIdx + 1;
+                            if (osmd.Sheet && osmd.Sheet.SourceMeasures && osmd.Sheet.SourceMeasures.length > mIdx) {
+                                var srcMeasure = osmd.Sheet.SourceMeasures[mIdx];
+                                if (srcMeasure && srcMeasure.MeasureNumber !== undefined) {
+                                    measureNumber = srcMeasure.MeasureNumber;
+                                }
+                            }
+                            cursorSteps.push({ t: real * 4 * (60 / bpm), m: mIdx, measureNumber: measureNumber });
+                            lastM = mIdx;
+                        }
+                        iterator.moveToNext();
+                    }
+                    osmd.cursor.reset();
+                    cursorStepsCache.bpm = bpm; cursorStepsCache.xml = rawXml; cursorStepsCache.mode = mode;
+                } catch (_) { }
+            }
+
+            function moveCursorToTime(offset) {
+                if (!osmd || !osmd.cursor) return;
+                var mode = +document.getElementById('cursorMode').value;
+                if (mode === -1) return;
+                extractCursorSteps();
+                try {
+                    osmd.cursor.cursorOptions.type = mode;
+                    osmd.cursor.reset(); osmd.cursor.show();
+                    cursorIndex = 0;
+                    while (cursorIndex + 1 < cursorSteps.length && offset >= cursorSteps[cursorIndex + 1].t - 0.01) {
+                        var targetM = cursorSteps[cursorIndex + 1].m;
+                        if (mode === 3) {
+                            while (!osmd.cursor.Iterator.EndReached && osmd.cursor.Iterator.CurrentMeasureIndex < targetM) {
+                                osmd.cursor.next();
+                            }
+                        } else if (mode === 0) {
+                            osmd.cursor.next();
+                        }
+                        cursorIndex++;
+                    }
+                } catch (_) { }
+            }
+
+            function startCursorFollow(offset) {
+                var mode = +document.getElementById('cursorMode').value;
+                if (mode === -1) return;
+                clearCursorTimer(); moveCursorToTime(offset);
+                var lastTime = 0;
+                function step(now) {
+                    if (!run || !ac || !osmd || !cursorSteps.length) {
+                        updateFingerboard([]);
+                        return;
+                    }
+                    if (now - lastTime >= 60) {
+                        lastTime = now;
+                        var current = ac.currentTime - sat;
+                        
+                        // Fingerboard Real-time Update
+                        var activeNotes = [];
+                        for (var i = 0; i < evs.length; i++) {
+                            var e = evs[i];
+                            if (e.t > current) break;
+                            if (e.t + e.dur > current && e.part === 0) {
+                                activeNotes.push(e.midi);
+                            }
+                        }
+                        updateFingerboard(activeNotes);
+
+                        var curMode = +document.getElementById('cursorMode').value;
+                        if (curMode === -1) return;
+                        while (cursorIndex + 1 < cursorSteps.length && current >= cursorSteps[cursorIndex + 1].t - 0.01) {
+                            try {
+                                var targetM = cursorSteps[cursorIndex + 1].m;
+                                if (curMode === 3) {
+                                    while (!osmd.cursor.Iterator.EndReached && osmd.cursor.Iterator.CurrentMeasureIndex < targetM) {
+                                        osmd.cursor.next();
+                                    }
+                                } else if (curMode === 0) {
+                                    osmd.cursor.next();
+                                }
+                                cursorIndex++;
+                            } catch (_) { break; }
+                        }
+                    }
+                    cursorTimer = requestAnimationFrame(step);
+                }
+                cursorTimer = requestAnimationFrame(step);
+            }
+
+            function finishPlayback() {
+                run = false; pat = 0; stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer(); resetCursorToStart();
+            }
+            function pausePlayback() {
+                if (!run || !ac) return;
+                run = false; pat = Math.max(0, ac.currentTime - sat);
+                stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer();
+                updateFingerboard([]);
+            }
+            function stopPlayback() {
+                run = false; pat = 0; stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer(); resetCursorToStart();
+            }
+            async function restartFromBeginningAndPlay() {
+                stopPlayback(false);
+                if (!partInsts.length || !ac) return;
+                var startT = getRangeStartTime();
+                run = true; await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
+            }
+            function armPlaybackEnd(offset) {
+                clearPlaybackEndTimer();
+                var endT = getRangeEndTime();
+                var remaining = Math.max(0, endT - offset);
+                playbackEndTimer = setTimeout(function () { finishPlayback(); }, Math.ceil((remaining + 0.12) * 1000));
+            }
+
+            function isTieContinuation(note) {
+                var tie = note.NoteTie || note.Tie; if (!tie) return false;
+                var startNote = tie.StartNote;
+                if (startNote && startNote !== note) return true;
+                if (tie.Notes && tie.Notes.length > 0 && tie.Notes[0] !== note) return true;
+                return false;
+            }
+            function getTiedDuration(note, beatLen) {
+                var tie = note.NoteTie || note.Tie, totalReal = 0;
+                if (tie && tie.Notes && tie.Notes.length > 0) {
+                    for (var i = 0; i < tie.Notes.length; i++) totalReal += getRealLength(tie.Notes[i]);
+                } else totalReal = getRealLength(note);
+                return totalReal * 4 * beatLen * 0.98;
+            }
+            function getRealLength(note) {
+                if (!note || !note.Length) return 0;
+                if (typeof note.Length.realValue !== 'undefined') return note.Length.realValue;
+                if (typeof note.Length.RealValue !== 'undefined') return note.Length.RealValue;
+                return 0;
+            }
+            function getMidiPitch(note) {
+                if (typeof note.halfTone !== 'undefined' && note.halfTone !== null) return note.halfTone + 12;
+                if (note.Pitch && typeof note.Pitch.getHalfTone === 'function') return note.Pitch.getHalfTone() + 12;
+                return null;
+            }
+
+            /* ─── Event extraction ───────────────────────────────────────────── */
+            var eventsCache = { bpm: null, evs: [], pieceEnd: 0 };
+
+            function extractEvents() {
+                evs = []; pieceEnd = 0;
+                var bpm = +document.getElementById('bpm').value || 100, beatLen = 60 / bpm;
+                var instIdMap = {};
+                if (osmd.Sheet && osmd.Sheet.Instruments) {
+                    for (var m = 0; m < osmd.Sheet.Instruments.length; m++) {
+                        var inst = osmd.Sheet.Instruments[m];
+                        if (inst.Id !== undefined) instIdMap[inst.Id] = m;
+                    }
+                }
+                osmd.cursor.reset();
+                var iterator = osmd.cursor.Iterator;
+                while (!iterator.EndReached) {
+                    var voices = iterator.CurrentVoiceEntries || [];
+                    var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
+                    var real = timeObj ? (typeof timeObj.realValue !== 'undefined' ? timeObj.realValue : (timeObj.RealValue || 0)) : 0;
+                    var tSec = real * 4 * beatLen;
+                    for (var i = 0; i < voices.length; i++) {
+                        var ve = voices[i]; if (!ve || !ve.Notes) continue;
+                        var partIdx = 0;
+                        try {
+                            if (ve.ParentVoice && ve.ParentVoice.Parent) {
+                                var instObj = ve.ParentVoice.Parent;
+                                if (!instObj.NameLabel && instObj.ParentInstrument) instObj = instObj.ParentInstrument;
+                                if (instObj && osmd.Sheet.Instruments) {
+                                    var idx = osmd.Sheet.Instruments.indexOf(instObj);
+                                    if (idx < 0 && instObj.Id !== undefined && instIdMap[instObj.Id] !== undefined) idx = instIdMap[instObj.Id];
+                                    if (idx >= 0) partIdx = idx;
+                                }
+                            }
+                        } catch (e) { }
+                        for (var j = 0; j < ve.Notes.length; j++) {
+                            var note = ve.Notes[j];
+                            if (!note || note.isRest()) continue;
+                            if (isTieContinuation(note)) continue;
+                            var midi = getMidiPitch(note); if (midi === null) continue;
+                            var dur = getTiedDuration(note, beatLen);
+                            evs.push({ t: tSec, midi: midi, dur: dur, part: partIdx });
+                            if (tSec + dur > pieceEnd) pieceEnd = tSec + dur;
+                        }
+                    }
+                    iterator.moveToNext();
+                }
+                evs.sort(function (a, b) { return a.t - b.t; });
+            }
+
+            async function scheduleMetronome(offset) {
+                if (!document.getElementById('metCheck').checked) return;
+                var beatLen = getMetronomeBeatLen();
+                nextMetTime = Math.ceil(offset / beatLen) * beatLen;
+            }
+
+            async function scheduler() {
+                if (!run || !ac) return;
+                var now = ac.currentTime;
+                var lookAheadLimit = now - sat + scheduleAheadTime;
+                var rangeEndT = getRangeEndTime();
+
+                /* Agendar Notas (only within range) */
+                while (nextEventIdx < evs.length && evs[nextEventIdx].t < lookAheadLimit) {
+                    var ev = evs[nextEventIdx];
+                    if (ev.t < rangeEndT) {
+                        var when = sat + ev.t;
+                        if (when >= now) {
+                            var partOct = (partConfigs[ev.part] && partConfigs[ev.part].oct) || 0;
+                            if (partInsts[ev.part] && typeof partInsts[ev.part].play === 'function') {
+                                var n = partInsts[ev.part].play(ev.midi + partOct, when, { duration: ev.dur });
+                                if (n) sc.push(n);
+                            }
+                        }
+                    }
+                    nextEventIdx++;
+                }
+
+                /* Agendar Metrônomo */
+                if (document.getElementById('metCheck').checked) {
+                    var beatLen = getMetronomeBeatLen();
+                    if (nextMetTime < now - sat) nextMetTime = Math.ceil((now - sat) / beatLen) * beatLen;
+                    while (nextMetTime < lookAheadLimit && nextMetTime < rangeEndT + 0.05) {
+                        var whenM = sat + nextMetTime;
+                        if (whenM >= now) {
+                            var mNodes = playMetronomeClick(whenM, ac.destination);
+                            for (var m = 0; m < mNodes.length; m++) sc.push(mNodes[m]);
+                        }
+                        nextMetTime += beatLen;
+                    }
+                }
+
+                schedulerTimer = setTimeout(scheduler, lookahead * 1000);
+            }
+
+            async function scheduleFrom(offset) {
+                extractEvents();
+                if (!evs.length) { return; }
+                if (ac.state === 'suspended') await ac.resume();
+                updateReverb(); stopScheduled(); clearPlaybackEndTimer();
+
+                sat = ac.currentTime + 0.1 - offset;
+
+                nextEventIdx = 0;
+                while (nextEventIdx < evs.length && evs[nextEventIdx].t < offset - 0.02) nextEventIdx++;
+
+                await scheduleMetronome(offset);
+                await scheduler();
+                armPlaybackEnd(offset);
+            }
+
+            /* ─── MXL / File loading ─────────────────────────────────────────── */
+            async function getXmlFromMxl(file) {
+                try {
+                    var zip = await JSZip.loadAsync(file);
+                    var containerFile = zip.file("META-INF/container.xml");
+                    if (!containerFile) throw new Error("Arquivo container.xml não encontrado no MXL.");
+                    var containerText = await containerFile.async("text");
+                    var parser = new DOMParser();
+                    var xmlDoc = parser.parseFromString(containerText, "text/xml");
+                    var rootFileTag = xmlDoc.querySelector("rootfile");
+                    if (!rootFileTag) throw new Error("Aponte para o arquivo principal não encontrado no container.xml.");
+                    var fullPath = rootFileTag.getAttribute("full-path");
+                    var mainXmlFile = zip.file(fullPath);
+                    if (!mainXmlFile) throw new Error("Arquivo principal '" + fullPath + "' não encontrado no pacote MXL.");
+                    return await mainXmlFile.async("text");
+                } catch (e) { throw new Error("Erro ao descompactar MXL: " + e.message); }
+            }
+
+            async function afterXmlLoaded() {
+                var detectedBpm = extractTempoFromXml(rawXml);
+                if (detectedBpm) document.getElementById('bpm').value = detectedBpm;
+                
+                await osmd.load(rawXml);
+                osmd.render();
+                resetCursorToStart(); extractCursorSteps();
+                if (ac && ac.state !== 'closed') { try { await ac.close(); } catch (_) { } }
+                ac = new (window.AudioContext || window.webkitAudioContext)();
+                setupFx(); initParts();
+                buildMeasureTimeMap();
+                updateRangeInputs();
+                sat = 0; pat = 0; run = false; evs = []; sc = []; pieceEnd = 0;
+                clearPlaybackEndTimer();
+                ['bp', 'bpa', 'bs', 'reverbAmt', 'rangeFrom', 'rangeTo'].forEach(function (id) {
+                    document.getElementById(id).disabled = false;
+                });
+            }
+
+            document.getElementById('fi').onchange = async function (e) {
+                var f = e.target.files[0]; if (!f) return;
+                var metaFallback = f.name;
+                document.getElementById('fname').textContent = metaFallback;
+                try {
+                    rawXml = f.name.toLowerCase().endsWith('.mxl') ? await getXmlFromMxl(f) : await f.text();
+                    var extractedTitle = extractMetaFromXml(rawXml).title;
+                    if(extractedTitle) document.getElementById('fname').textContent = extractedTitle;
+                    await afterXmlLoaded();
+                } catch (err) { }
+            };
+
+            async function loadFromUrl(url) {
+                try {
+                    var resp = await fetch(url); if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    rawXml = await resp.text();
+                    var meta = extractMetaFromXml(rawXml);
+                    document.getElementById('fname').textContent = meta.title || 'Vitopamos.musicxml';
+                    await afterXmlLoaded();
+                } catch (err) { }
+            }
+
+            loadFromUrl('https://raw.githubusercontent.com/GlauberLASantiago/dedo-de-violinista/main/exemplo.musicxml');
+
+            document.getElementById('bp').onclick = async function () {
+                if (run || !partInsts.length || !ac) return;
+                run = true;
+                var startT = getRangeStartTime();
+                await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
+            };
+
+            document.getElementById('bpa').onclick = function () { pausePlayback(); };
+            document.getElementById('bs').onclick = function () { stopPlayback(true); };
+            document.getElementById('reverbAmt').oninput = function () { updateReverb(); };
+
+            document.getElementById('zoomInp').onchange = function () {
+                if (!rawXml) return;
+                osmd.Zoom = (+this.value || 100) / 100; osmd.render();
+            };
+
+            document.getElementById('bpm').onchange = function () {
+                if (!rawXml) return;
+                buildMeasureTimeMap();
+                if (run && ac) {
+                    var currentOffset = Math.max(0, ac.currentTime - sat);
+                    stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer();
+                    scheduleFrom(currentOffset).then(function () { startCursorFollow(currentOffset); });
+                } else moveCursorToTime(pat || 0);
+            };
+
+            document.getElementById('cursorMode').onchange = function () {
+                if (!rawXml) return;
+                var mode = +this.value;
+                if (osmd && osmd.cursor) {
+                    if (mode === -1) osmd.cursor.hide();
+                    else { osmd.cursor.cursorOptions.type = mode; osmd.cursor.show(); }
+                }
+                cursorStepsCache.mode = null;
+                moveCursorToTime(run ? Math.max(0, ac.currentTime - sat) : (pat || 0));
+            };
+
+            document.getElementById('score').addEventListener('click', function (ev) {
+                if (!rawXml) return;
+                if (scoreClickTimer) clearTimeout(scoreClickTimer);
+                var detail = ev.detail;
+                scoreClickTimer = setTimeout(async function () {
+                    scoreClickTimer = null;
+                    if (detail >= 3) { await restartFromBeginningAndPlay(); return; }
+                    if (detail === 2) { stopPlayback(true); return; }
+                    if (run) { pausePlayback(); }
+                    else if (partInsts.length && ac) {
+                        run = true;
+                        var startT = pat || getRangeStartTime();
+                        await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
+                    }
+                }, 250);
+            });
+
+        })();
+    </script>
+</body>
+
+</html>
