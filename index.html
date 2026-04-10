@@ -1005,8 +1005,8 @@
                 var osc = ac.createOscillator();
                 var gain = ac.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(1800, when); 
-                osc.frequency.exponentialRampToValueAtTime(200, when + 0.05);
+                osc.frequency.setValueAtTime(1500, when); 
+                osc.frequency.exponentialRampToValueAtTime(1000, when + 0.01);
                 gain.gain.setValueAtTime(0.2, when);
                 gain.gain.exponentialRampToValueAtTime(0.01, when + 0.05);
                 osc.connect(gain);
