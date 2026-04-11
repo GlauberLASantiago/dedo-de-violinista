@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Dedo de violinista</title>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎻</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎻</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -153,6 +152,14 @@
 
         .load-btn input {
             display: none;
+        }
+
+        .btn-hymn {
+            background-color: #059669 !important;
+        }
+
+        .btn-hymn:hover {
+            background-color: #047857 !important;
         }
 
         .fname {
@@ -532,6 +539,11 @@
             height: auto;
         }
 
+        /* Correção do deslocamento do cursor (nota e compasso) */
+        #score [id^="cursorImg"] {
+            transform: translate(-5px, -5px) !important;
+        }
+
         .credits-footer {
             max-width: 1080px;
             margin: 24px auto 0;
@@ -655,7 +667,7 @@
         </div>
 
         <div class="body">
-            <div style="display:flex; align-items:center; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <label class="load-btn">
                     <svg class="icon-svg" style="width:16px;height:16px;margin-right:6px;" viewBox="0 0 24 24">
                         <path
@@ -674,6 +686,16 @@
                     </svg>
                     <span>Salvar como HTML</span>
                 </button>
+
+                <!-- Novo Botão Dropdown para o Hinário -->
+                <div class="hymn-wrap" style="position: relative;">
+                    <select id="hymnSelect" class="load-btn btn-hymn" style="appearance: none; padding-right: 32px; border: none; outline: none; cursor: pointer;">
+                        <option value="">📖 Hinos Novo Cântico...</option>
+                    </select>
+                    <svg class="icon-svg" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 14px; height: 14px; color: #fff;" viewBox="0 0 24 24">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
             </div>
 
             <div class="fname" id="fname">Nenhum arquivo selecionado</div>
@@ -1595,6 +1617,7 @@
 
                 await osmd.load(rawXml);
                 osmd.render();
+
                 resetCursorToStart(); extractCursorSteps();
                 if (ac && ac.state !== 'closed') { try { await ac.close(); } catch (_) { } }
                 ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -1621,15 +1644,71 @@
                 } catch (err) { }
             };
 
-            async function loadFromUrl(url) {
+            async function loadFromUrl(url, fallbackName) {
                 try {
-                    var resp = await fetch(url); if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                    rawXml = await resp.text();
+                    var resp = await fetch(url); 
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    
+                    // Verifica de forma segura se o link aponta para um .mxl (arquivo compactado ZIP)
+                    if (url.toLowerCase().split('?')[0].endsWith('.mxl')) {
+                        var blob = await resp.blob(); // Pega o arquivo de forma binária
+                        rawXml = await getXmlFromMxl(blob); // O JSZip descompacta o arquivo adequadamente
+                    } else {
+                        rawXml = await resp.text(); // Extração padrão em texto para XML e MusicXML
+                    }
+                    
                     var meta = extractMetaFromXml(rawXml);
-                    document.getElementById('fname').textContent = meta.title || 'Vitopamos.musicxml';
+                    document.getElementById('fname').textContent = meta.title || fallbackName || 'Partitura importada';
                     await afterXmlLoaded();
-                } catch (err) { }
+                } catch (err) { 
+                    console.error('Erro no loadFromUrl:', err); 
+                    document.getElementById('fname').textContent = "⚠️ Erro ao carregar partitura";
+                }
             }
+
+            // GitHub Fetch Logic para Hinário
+            async function loadHymnList() {
+                var select = document.getElementById('hymnSelect');
+                try {
+                    var githubApiUrl = 'https://api.github.com/repos/GlauberLASantiago/dedo-de-violinista/contents/Violinos';
+                    var response = await fetch(githubApiUrl);
+                    
+                    if (!response.ok) {
+                        if(response.status === 404) throw new Error('Pasta não encontrada (404)');
+                        if(response.status === 403) throw new Error('Limite de acesso excedido (403)');
+                        throw new Error('Erro ' + response.status);
+                    }
+                    var data = await response.json();
+                    
+                    var hinosEncontrados = 0;
+                    data.forEach(function(file) {
+                        if (file.type === 'file' && (file.name.endsWith('.xml') || file.name.endsWith('.musicxml') || file.name.endsWith('.mxl'))) {
+                            var opt = document.createElement('option');
+                            opt.value = file.download_url; // Link direto do Raw File
+                            // Limpa a extensão para exibição amigável
+                            opt.textContent = file.name.replace(/\.[^/.]+$/, "");
+                            select.appendChild(opt);
+                            hinosEncontrados++;
+                        }
+                    });
+                    
+                    if(hinosEncontrados === 0) {
+                        select.options[0].textContent = "⚠️ Nenhum XML na pasta";
+                    }
+                } catch (e) {
+                    console.warn('Não foi possível carregar a lista de hinos:', e);
+                    select.options[0].textContent = "⚠️ " + e.message;
+                }
+            }
+
+            document.getElementById('hymnSelect').addEventListener('change', async function() {
+                if (!this.value) return;
+                var url = this.value;
+                var name = this.options[this.selectedIndex].text;
+                document.getElementById('fname').textContent = "Carregando " + name + "...";
+                await loadFromUrl(url, name);
+                this.value = ""; // Retorna para o placeholder "Escolher Hino..." para permitir re-clique se necessário
+            });
 
             // Captura o código fonte inicial para exportação (pode falhar em file://)
             fetch(window.location.href).then(function(r){ return r.text(); }).then(function(t){ appSource = t; }).catch(function(){});
@@ -1672,6 +1751,9 @@
             } else {
                 loadFromUrl('https://raw.githubusercontent.com/GlauberLASantiago/dedo-de-violinista/main/exemplo.musicxml');
             }
+
+            // Inicia a requisição da lista do Hinário assim que o app carregar
+            loadHymnList();
 
             document.getElementById('bp').onclick = async function () {
                 if (run || !partInsts.length || !ac) return;
