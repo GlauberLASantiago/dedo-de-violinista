@@ -199,6 +199,11 @@
             background: #16a34a;
         }
 
+        .btn-play.playing {
+            background: #15803d !important;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
         .btn-pause {
             background: #f59e0b;
             color: #fff;
@@ -1372,6 +1377,8 @@
                     restartFromBeginningAndPlay();
                 } else {
                     run = false; pat = 0; stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer(); resetCursorToStart();
+                    var bp = document.getElementById('bp');
+                    if (bp) bp.classList.remove('playing');
                 }
             }
             function pausePlayback() {
@@ -1379,9 +1386,13 @@
                 run = false; pat = Math.max(0, ac.currentTime - sat);
                 stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer();
                 updateFingerboard([]);
+                var bp = document.getElementById('bp');
+                if (bp) bp.classList.remove('playing');
             }
             function stopPlayback() {
                 run = false; pat = 0; stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer(); resetCursorToStart();
+                var bp = document.getElementById('bp');
+                if (bp) bp.classList.remove('playing');
             }
             async function restartFromBeginningAndPlay() {
                 stopPlayback(false);
@@ -1613,6 +1624,7 @@
             document.getElementById('bp').onclick = async function () {
                 if (run || !partInsts.length || !ac) return;
                 run = true;
+                this.classList.add('playing');
                 var startT = getRangeStartTime();
                 await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
             };
@@ -1673,6 +1685,7 @@
                     if (run) { pausePlayback(); }
                     else if (partInsts.length && ac) {
                         run = true;
+                        document.getElementById('bp').classList.add('playing');
                         var startT = pat || getRangeStartTime();
                         await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
                     }
