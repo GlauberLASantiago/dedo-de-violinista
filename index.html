@@ -655,15 +655,26 @@
         </div>
 
         <div class="body">
-            <label class="load-btn">
-                <svg class="icon-svg" style="width:16px;height:16px;margin-right:6px;" viewBox="0 0 24 24">
-                    <path
-                        d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.69.9H18a2 2 0 0 1 2 2v2">
-                    </path>
-                </svg>
-                <span>Carregar partitura</span>
-                <input type="file" id="fi" accept=".xml,.musicxml,.mxl">
-            </label>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <label class="load-btn">
+                    <svg class="icon-svg" style="width:16px;height:16px;margin-right:6px;" viewBox="0 0 24 24">
+                        <path
+                            d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.69.9H18a2 2 0 0 1 2 2v2">
+                        </path>
+                    </svg>
+                    <span>Carregar partitura</span>
+                    <input type="file" id="fi" accept=".xml,.musicxml,.mxl">
+                </label>
+
+                <button class="load-btn" id="btnExport" style="background:#0284c7;" disabled title="Salvar este app com a partitura atual embutida">
+                    <svg class="icon-svg" style="width:16px;height:16px;margin-right:6px;" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span>Salvar como HTML</span>
+                </button>
+            </div>
 
             <div class="fname" id="fname">Nenhum arquivo selecionado</div>
 
@@ -851,8 +862,9 @@
             });
 
             /* ─── Estado global ──────────────────────────────────────────────── */
+            var EMBEDDED_XML = ``; // @EMBEDDED_XML_PLACEHOLDER@
             var partInsts = [], partConfigs = [], partGains = [];
-            var evs = [], ac = null, sc = [], sat = 0, pat = 0, run = false, rawXml = '';
+            var evs = [], ac = null, sc = [], sat = 0, pat = 0, run = false, rawXml = '', appSource = '';
             var drumPlayer = new WebAudioFontPlayer();
             var cursorTimer = null, cursorSteps = [], cursorIndex = 0;
             var inputGain = null, masterGain = null, dryGain = null, wetGain = null, convolver = null;
@@ -1591,7 +1603,7 @@
                 updateRangeInputs();
                 sat = 0; pat = 0; run = false; evs = []; sc = []; pieceEnd = 0;
                 clearPlaybackEndTimer();
-                ['bp', 'bpa', 'bs', 'reverbAmt', 'rangeFrom', 'rangeTo', 'countInSelect', 'loopCheck'].forEach(function (id) {
+                ['bp', 'bpa', 'bs', 'reverbAmt', 'rangeFrom', 'rangeTo', 'countInSelect', 'loopCheck', 'btnExport'].forEach(function (id) {
                     var el = document.getElementById(id);
                     if (el) el.disabled = false;
                 });
@@ -1619,7 +1631,47 @@
                 } catch (err) { }
             }
 
-            loadFromUrl('https://raw.githubusercontent.com/GlauberLASantiago/dedo-de-violinista/main/exemplo.musicxml');
+            // Captura o código fonte inicial para exportação (pode falhar em file://)
+            fetch(window.location.href).then(function(r){ return r.text(); }).then(function(t){ appSource = t; }).catch(function(){});
+
+            function exportHtml() {
+                if (!rawXml) return;
+                var source = appSource;
+                if (!source) {
+                    // Fallback para quando o fetch é bloqueado (uso local): reconstrói a partir do DOM atual
+                    var docClone = document.documentElement.cloneNode(true);
+                    var sDiv = docClone.querySelector('#score');
+                    if (sDiv) sDiv.innerHTML = ''; // Limpa os SVGs pesados gerados pelo OSMD
+                    docClone.querySelectorAll('.playing').forEach(function(el){ el.classList.remove('playing'); });
+                    source = "<!DOCTYPE html>\n" + docClone.outerHTML;
+                }
+                
+                var fileName = (document.getElementById('fname').textContent || 'dedo-de-violinista').replace(/\s+/g, '_') + '.html';
+                
+                // Injeta o XML no lugar do placeholder ou no primeiro script
+                var scriptToInject = 'var EMBEDDED_XML = ' + JSON.stringify(rawXml) + ';';
+                var finalHtml = source.replace(/var EMBEDDED_XML = ``; \/\/ @EMBEDDED_XML_PLACEHOLDER@/, scriptToInject);
+                
+                // Garantia caso o comentário do placeholder tenha sumido no outerHTML
+                if (finalHtml === source && source.indexOf(scriptToInject) === -1) {
+                    finalHtml = source.replace(/<script>/, '<script>\n' + scriptToInject + '\n');
+                }
+                
+                var blob = new Blob([finalHtml], { type: 'text/html' });
+                var link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                link.click();
+            }
+
+            document.getElementById('btnExport').onclick = exportHtml;
+
+            if (EMBEDDED_XML) {
+                rawXml = EMBEDDED_XML;
+                afterXmlLoaded();
+            } else {
+                loadFromUrl('https://raw.githubusercontent.com/GlauberLASantiago/dedo-de-violinista/main/exemplo.musicxml');
+            }
 
             document.getElementById('bp').onclick = async function () {
                 if (run || !partInsts.length || !ac) return;
