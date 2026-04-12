@@ -656,12 +656,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 86px;
-            height: 86px;
+            width: 43px;
+            height: 43px;
             background: var(--ctrl-bg);
             border-radius: 50%;
-            border: 3px solid var(--status-info);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            border: 2px solid var(--status-info);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
             flex-shrink: 0;
             transition: all 0.3s;
             position: relative;
@@ -670,21 +670,21 @@
         .note-display::after {
             content: "";
             position: absolute;
-            top: -6px;
-            left: -6px;
-            right: -6px;
-            bottom: -6px;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
             border: 1px solid var(--border);
             border-radius: 50%;
             pointer-events: none;
         }
 
         .note-display-main {
-            font-size: 34px;
+            font-size: 17px;
             font-weight: 800;
             color: var(--text-main);
             text-align: center;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
             transition: color 0.1s;
         }
 
@@ -816,7 +816,7 @@
                 padding: 16px 12px;
             }
 
-            /* Menu maior no mobile */
+            /* Menu compacto no mobile para economizar espaço */
             .btn,
             .load-btn,
             .bpm-wrap,
@@ -826,26 +826,26 @@
             .cursor-wrap,
             .range-wrap,
             .hymn-wrap .load-btn {
-                height: 46px;
-                font-size: 15px;
-                padding: 0 16px;
+                height: 28px;
+                font-size: 11px;
+                padding: 0 8px;
             }
 
             .load-btn span,
             .btn span {
-                font-size: 14px;
+                font-size: 10px;
             }
 
             .bpm-wrap input[type="number"],
             .rev-wrap input,
             .zoom-wrap input,
             .range-num {
-                font-size: 17px;
-                width: 55px;
+                font-size: 13px;
+                width: 40px;
             }
 
             .controls {
-                gap: 10px;
+                gap: 6px;
                 justify-content: center;
             }
 
@@ -891,9 +891,9 @@
             #focusModeBar .btn,
             #focusModeBar .load-btn,
             #focusModeBar .hymn-wrap .load-btn {
-                height: 36px !important;
-                font-size: 13px !important;
-                padding: 0 10px !important;
+                height: 28px !important;
+                font-size: 11px !important;
+                padding: 0 8px !important;
                 flex-shrink: 0;
             }
 
