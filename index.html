@@ -300,6 +300,7 @@
         .zoom-wrap input:focus {
             outline: none;
         }
+
         .range-num {
             width: 44px;
             border: none;
@@ -650,6 +651,7 @@
             margin: 0 auto 32px;
             max-width: 1000px;
         }
+
         .note-display {
             display: flex;
             align-items: center;
@@ -664,14 +666,19 @@
             transition: all 0.3s;
             position: relative;
         }
+
         .note-display::after {
             content: "";
             position: absolute;
-            top: -6px; left: -6px; right: -6px; bottom: -6px;
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
             border: 1px solid var(--border);
             border-radius: 50%;
             pointer-events: none;
         }
+
         .note-display-main {
             font-size: 34px;
             font-weight: 800;
@@ -680,6 +687,7 @@
             letter-spacing: -1px;
             transition: color 0.1s;
         }
+
         .note-display-main.active {
             color: var(--status-info);
             text-shadow: 0 0 15px rgba(217, 119, 6, 0.3);
@@ -692,17 +700,20 @@
         .hide-visual-aids .note-display {
             display: none !important;
         }
-        
+
         /* Ajuste do layout quando o mostrador lateral some */
         .hide-visual-aids .fb-layout-wrap {
             gap: 0;
         }
 
-        #btnToggleAids, #btnFocus {
+        #btnToggleAids,
+        #btnFocus {
             background-color: #57534e;
             color: #fff;
         }
-        #btnToggleAids:hover, #btnFocus:hover {
+
+        #btnToggleAids:hover,
+        #btnFocus:hover {
             background-color: #44403c;
         }
 
@@ -712,9 +723,11 @@
             padding: 0;
             overflow-x: hidden;
         }
+
         body.focus-mode .hd,
         body.focus-mode .top-bar,
-        body.focus-mode .fname-hidden-deprecated, /* Removido .fname daqui */
+        body.focus-mode .fname-hidden-deprecated,
+        /* Removido .fname daqui */
         body.focus-mode .controls,
         body.focus-mode .fb-layout-wrap,
         body.focus-mode .visualizer-panel,
@@ -722,14 +735,15 @@
         body.focus-mode .inst-guide {
             display: none !important;
         }
-        
+
         /* Área superior minimalista no modo foco */
-        body.focus-mode .body > div:first-child {
+        body.focus-mode .body>div:first-child {
             justify-content: center !important;
             padding: 24px 0 10px !important;
             margin: 0 !important;
         }
-        body.focus-mode .body > div:first-child > *:not(#btnExitFocus) {
+
+        body.focus-mode .body>div:first-child>*:not(#btnExitFocus) {
             display: none !important;
         }
 
@@ -746,16 +760,19 @@
             align-items: center;
             gap: 8px;
             transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         }
+
         #btnExitFocus:hover {
             background: #44403c;
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
         }
+
         body.focus-mode #btnExitFocus {
             display: inline-flex !important;
         }
+
         body.focus-mode .card {
             max-width: 100%;
             margin: 0;
@@ -814,8 +831,10 @@
                     <span>Salvar como HTML</span>
                 </button>
 
-                <button class="load-btn btn-hymn" id="btnPrevHymn" title="Hino Anterior" style="padding: 10px 14px; min-width: auto; margin-right: 2px;">
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;" viewBox="0 0 24 24">
+                <button class="load-btn btn-hymn" id="btnPrevHymn" title="Hino Anterior"
+                    style="padding: 10px 14px; min-width: auto; margin-right: 2px;">
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
+                        viewBox="0 0 24 24">
                         <polyline points="15 18 9 12 15 6"></polyline>
                     </svg>
                 </button>
@@ -833,14 +852,17 @@
                     </svg>
                 </div>
 
-                <button class="load-btn btn-hymn" id="btnNextHymn" title="Próximo Hino" style="padding: 10px 14px; min-width: auto; margin-left: 2px;">
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;" viewBox="0 0 24 24">
+                <button class="load-btn btn-hymn" id="btnNextHymn" title="Próximo Hino"
+                    style="padding: 10px 14px; min-width: auto; margin-left: 2px;">
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
+                        viewBox="0 0 24 24">
                         <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
                 </button>
 
                 <button id="btnExitFocus" style="display:none;">
-                    <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;" viewBox="0 0 24 24">
+                    <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;"
+                        viewBox="0 0 24 24">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
@@ -874,7 +896,8 @@
                 <div class="range-wrap">
                     <label for="bpm">BPM</label>
                     <input type="number" id="bpm" value="100" min="20" max="400" step="1">
-                    <label class="check-wrap" style="font-size: 10px; margin-left: 2px; color: var(--text-sub);" title="Reduzir 30 BPM automaticamente ao carregar">
+                    <label class="check-wrap" style="font-size: 10px; margin-left: 2px; color: var(--text-sub);"
+                        title="Reduzir 30 BPM automaticamente ao carregar">
                         <input type="checkbox" id="bpmRedCheck" checked> -30
                     </label>
                 </div>
@@ -935,20 +958,25 @@
                         disabled>
                 </div>
 
-                <button class="btn" id="btnToggleAids" title="Ocultar/Mostrar indicações visuais (Dedilhados, Guias e Nomes)">
+                <button class="btn" id="btnToggleAids"
+                    title="Ocultar/Mostrar indicações visuais (Dedilhados, Guias e Nomes)">
                     <svg id="aidsIconShow" class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
                     </svg>
-                    <svg id="aidsIconHide" class="icon-svg" style="width:14px;height:14px;display:none;" viewBox="0 0 24 24">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <svg id="aidsIconHide" class="icon-svg" style="width:14px;height:14px;display:none;"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                        </path>
                         <line x1="1" y1="1" x2="23" y2="23"></line>
                     </svg>
                     <span>Auxílios</span>
                 </button>
 
                 <button class="btn" id="btnFocus" title="Modo Foco: Mostrar apenas a partitura">
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;" viewBox="0 0 24 24">
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;"
+                        viewBox="0 0 24 24">
                         <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path>
                     </svg>
                     <span>Foco</span>
@@ -1086,25 +1114,48 @@
             var currentHymnIndex = 0;
 
             /* ─── Fingerboard Logic ─── */
-            function getViolinFingering(midi) {
-                // Tabela baseada em semitons a partir da corda solta para a 1ª posição:
-                // Índice 6 (trítono/5ª diminuta) alterado para usar o dedo 4 conforme solicitado.
-                var fArr = [0, 1, 1, 2, 2, 3, 4, 4];
+            function getViolinFingering(noteObj) {
+                // Suporta objeto {midi, step, alter} ou número MIDI simples (fallback)
+                var midi = (typeof noteObj === 'object' && noteObj !== null) ? noteObj.midi : noteObj;
+                var step = (typeof noteObj === 'object' && noteObj !== null) ? noteObj.step : null;
+                var alter = (typeof noteObj === 'object' && noteObj !== null) ? (noteObj.alter || 0) : 0;
 
-                if (midi >= 76 && midi <= 83) return { string: 'E', semi: midi - 76, finger: fArr[midi - 76] };
-                if (midi >= 69 && midi <= 75) return { string: 'A', semi: midi - 69, finger: fArr[midi - 69] };
-                if (midi >= 62 && midi <= 68) return { string: 'D', semi: midi - 62, finger: fArr[midi - 62] };
-                if (midi >= 55 && midi <= 61) return { string: 'G', semi: midi - 55, finger: fArr[midi - 55] };
+                var string, semi;
+                if (midi >= 76 && midi <= 83) { string = 'E'; semi = midi - 76; }
+                else if (midi >= 69 && midi <= 75) { string = 'A'; semi = midi - 69; }
+                else if (midi >= 62 && midi <= 68) { string = 'D'; semi = midi - 62; }
+                else if (midi >= 55 && midi <= 61) { string = 'G'; semi = midi - 55; }
+                else return null;
 
-                return null;
+                var finger;
+                if (step !== null) {
+                    // Dedilhado contextual: respeita o nome real da nota (enarmonia).
+                    // Regra pedagógica: sustenidos mantêm o dedo da nota abaixo (posição alta);
+                    //                  bemóis avançam para o próximo dedo (posição baixa).
+                    // Exemplo na corda Lá: Dó# → dedo 2 (2º dedo alto); Réb → dedo 3 (3º dedo baixo).
+                    var key = step + ':' + Math.round(alter);
+                    var fingerMaps = {
+                        'G': { 'G:0':0, 'G:1':1, 'A:-1':1, 'A:0':1, 'A:1':2, 'B:-1':2, 'B:0':2, 'C:0':3, 'C:1':3, 'D:-1':4 },
+                        'D': { 'D:0':0, 'D:1':1, 'E:-1':1, 'E:0':1, 'F:0':2, 'F:1':2, 'G:-1':3, 'G:0':3, 'G:1':3, 'A:-1':4 },
+                        'A': { 'A:0':0, 'A:1':1, 'B:-1':1, 'B:0':1, 'C:0':2, 'C:1':2, 'D:-1':3, 'D:0':3, 'D:1':3, 'E:-1':4 },
+                        'E': { 'E:0':0, 'F:0':1, 'F:1':1, 'G:-1':2, 'G:0':2, 'G:1':2, 'A:-1':3, 'A:0':3, 'A:1':3, 'B:-1':4, 'B:0':4 }
+                    };
+                    var map = fingerMaps[string];
+                    finger = (map && map[key] !== undefined) ? map[key] : [0, 1, 1, 2, 2, 3, 4, 4][semi];
+                } else {
+                    // Fallback por MIDI (sem informação de nome de nota)
+                    finger = [0, 1, 1, 2, 2, 3, 4, 4][semi];
+                }
+
+                return { string: string, semi: semi, finger: finger };
             }
 
-            function updateFingerboard(activeMidis) {
+            function updateFingerboard(activeNotes) {
                 var strings = ['E', 'A', 'D', 'G'];
                 var state = { E: null, A: null, D: null, G: null };
 
-                activeMidis.forEach(function (midi) {
-                    var f = getViolinFingering(midi);
+                activeNotes.forEach(function (noteObj) {
+                    var f = getViolinFingering(noteObj);
                     if (f) state[f.string] = f;
                 });
 
@@ -1244,7 +1295,7 @@
                 var gSelect = document.getElementById('guidePartSelect');
                 var selectedPartIdx = gSelect ? parseInt(gSelect.value) : 0;
                 var currentMap = xmlNoteMap[selectedPartIdx];
-                if (!currentMap || !currentMap.length) return { midis: [], note: null };
+                if (!currentMap || !currentMap.length) return { notes: [], note: null };
 
                 var bpm = +document.getElementById('bpm').value || 100;
 
@@ -1254,14 +1305,14 @@
                     var t = measureTimeMap[mn];
                     if (t <= currentSec + 0.01 && t > bestT) { bestT = t; bestM = parseInt(mn); }
                 }
-                if (bestM === -1) return { midis: [], note: null };
+                if (bestM === -1) return { notes: [], note: null };
 
                 // Localiza a entrada do compasso no mapa XML
                 var mapEntry = null;
                 for (var i = 0; i < currentMap.length; i++) {
                     if (currentMap[i].measureNumber === bestM) { mapEntry = currentMap[i]; break; }
                 }
-                if (!mapEntry || !mapEntry.notes.length) return { midis: [], note: null };
+                if (!mapEntry || !mapEntry.notes.length) return { notes: [], note: null };
 
                 // Calcula ticks decorridos dentro do compasso
                 // 1 beat (semínima) = 60/bpm segundos → 1 tick = 60/(bpm*divisions) segundos
@@ -1269,16 +1320,16 @@
                 var ticksPerSec = mapEntry.divisions * bpm / 60;
                 var elapsedTicks = elapsedSec * ticksPerSec;
 
-                var activeMidis = [], activeNote = null;
+                var activeNoteObjs = [], activeNote = null;
                 for (var j = 0; j < mapEntry.notes.length; j++) {
                     var note = mapEntry.notes[j];
                     // Margem de 0.5 ticks para compensar imprecisões de tempo
                     if (note.start_time <= elapsedTicks + 0.5 && note.start_time + note.duration > elapsedTicks) {
-                        activeMidis.push(note.midi);
+                        activeNoteObjs.push(note); // Passa objeto completo para preservar step e alter
                         if (!activeNote) activeNote = { note: note, measureNumber: bestM };
                     }
                 }
-                return { midis: activeMidis, note: activeNote };
+                return { notes: activeNoteObjs, note: activeNote };
             }
 
             function updateNoteDisplay(noteInfo) {
@@ -1717,7 +1768,7 @@
                         } else {
                             // Fingerboard Real-time Update — usa parser MusicXML manual como fonte da verdade
                             var xmlResult = getActiveMidisFromXmlMap(current);
-                            updateFingerboard(xmlResult.midis);
+                            updateFingerboard(xmlResult.notes);
                             updateNoteDisplay(xmlResult.note);
 
                             var curMode = +document.getElementById('cursorMode').value;
@@ -2053,7 +2104,7 @@
                 this.value = ""; // Retorna para o placeholder 
             });
 
-            document.getElementById('btnNextHymn').onclick = function() {
+            document.getElementById('btnNextHymn').onclick = function () {
                 var select = document.getElementById('hymnSelect');
                 if (select.options.length <= 1) return;
                 var next = currentHymnIndex + 1;
@@ -2062,7 +2113,7 @@
                 select.dispatchEvent(new Event('change'));
             };
 
-            document.getElementById('btnPrevHymn').onclick = function() {
+            document.getElementById('btnPrevHymn').onclick = function () {
                 var select = document.getElementById('hymnSelect');
                 if (select.options.length <= 1) return;
                 var prev = currentHymnIndex - 1;
@@ -2233,8 +2284,8 @@
                     // No modo foco, aumenta um pouco o zoom se estiver baixo para aproveitar a tela
                     if (isFocus && currentZoom < 120) osmd.Zoom = 1.25;
                     else osmd.Zoom = currentZoom / 100;
-                    
-                    setTimeout(function() {
+
+                    setTimeout(function () {
                         osmd.render();
                     }, 100);
                 }
