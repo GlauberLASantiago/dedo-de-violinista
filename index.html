@@ -2170,6 +2170,14 @@
                 }
 
                 await osmd.load(rawXml);
+
+                // Ajuste de zoom proporcional para mobile no carregamento inicial
+                var zoomEl = document.getElementById('zoomInp');
+                if (window.innerWidth < 768 && zoomEl.value == "100") {
+                    zoomEl.value = "65";
+                }
+                osmd.Zoom = (+zoomEl.value || 100) / 100;
+
                 osmd.render();
                 buildXmlNoteMap(rawXml); // Parser manual MusicXML — constrói mapa de notas do Staff 1
 
