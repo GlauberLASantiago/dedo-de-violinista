@@ -300,8 +300,6 @@
         .zoom-wrap input:focus {
             outline: none;
         }
-
-        /* ── Range controls ── */
         .range-num {
             width: 44px;
             border: none;
@@ -311,6 +309,10 @@
             color: var(--text-main);
             text-align: center;
             font-family: inherit;
+        }
+
+        .fname {
+            display: none !important;
         }
 
         .range-num:focus {
@@ -712,7 +714,7 @@
         }
         body.focus-mode .hd,
         body.focus-mode .top-bar,
-        body.focus-mode .fname,
+        body.focus-mode .fname-hidden-deprecated, /* Removido .fname daqui */
         body.focus-mode .controls,
         body.focus-mode .fb-layout-wrap,
         body.focus-mode .visualizer-panel,
@@ -812,6 +814,12 @@
                     <span>Salvar como HTML</span>
                 </button>
 
+                <button class="load-btn btn-hymn" id="btnPrevHymn" title="Hino Anterior" style="padding: 10px 14px; min-width: auto; margin-right: 2px;">
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;" viewBox="0 0 24 24">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+
                 <!-- Novo Botão Dropdown para o Hinário -->
                 <div class="hymn-wrap" style="position: relative;">
                     <select id="hymnSelect" class="load-btn btn-hymn"
@@ -824,6 +832,12 @@
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </div>
+
+                <button class="load-btn btn-hymn" id="btnNextHymn" title="Próximo Hino" style="padding: 10px 14px; min-width: auto; margin-left: 2px;">
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;" viewBox="0 0 24 24">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
 
                 <button id="btnExitFocus" style="display:none;">
                     <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;" viewBox="0 0 24 24">
@@ -1053,7 +1067,7 @@
             };
 
             var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay('score', {
-                backend: 'svg', autoResize: true, drawTitle: true, followCursor: false
+                backend: 'svg', autoResize: true, drawTitle: true, drawSubtitle: false, followCursor: false
             });
 
             /* ─── Estado global ──────────────────────────────────────────────── */
@@ -1069,6 +1083,7 @@
             var totalMeasures = 0, playbackStartOffset = 0;
             var xmlNoteMap = {}; // Mapa manual de notas extraídas do MusicXML (indexado por partIndex)
             var originalXmlBpm = null;
+            var currentHymnIndex = 0;
 
             /* ─── Fingerboard Logic ─── */
             function getViolinFingering(midi) {
@@ -1393,7 +1408,8 @@
                 var title = '', m;
                 m = xml.match(/<work-title>([\s\S]*?)<\/work-title>/);
                 if (!m) m = xml.match(/<movement-title>([\s\S]*?)<\/movement-title>/);
-                if (m) title = m[1].trim();
+                if (!m) m = xml.match(/<credit-words[^>]*font-size="[1-2][\d]"[^>]*>([\s\S]*?)<\/credit-words>/); // Fallback para créditos grandes
+                if (m) title = m[1].replace(/<[^>]*>/g, '').trim();
                 return { title: title };
             }
 
@@ -2029,12 +2045,31 @@
 
             document.getElementById('hymnSelect').addEventListener('change', async function () {
                 if (!this.value) return;
+                currentHymnIndex = this.selectedIndex;
                 var url = this.value;
                 var name = this.options[this.selectedIndex].text;
                 document.getElementById('fname').textContent = "Carregando " + name + "...";
                 await loadFromUrl(url, name);
-                this.value = ""; // Retorna para o placeholder "Escolher Hino..." para permitir re-clique se necessário
+                this.value = ""; // Retorna para o placeholder 
             });
+
+            document.getElementById('btnNextHymn').onclick = function() {
+                var select = document.getElementById('hymnSelect');
+                if (select.options.length <= 1) return;
+                var next = currentHymnIndex + 1;
+                if (next >= select.options.length) next = 1; // Loop para o primeiro hino
+                select.selectedIndex = next;
+                select.dispatchEvent(new Event('change'));
+            };
+
+            document.getElementById('btnPrevHymn').onclick = function() {
+                var select = document.getElementById('hymnSelect');
+                if (select.options.length <= 1) return;
+                var prev = currentHymnIndex - 1;
+                if (prev <= 0) prev = select.options.length - 1; // Loop para o último hino
+                select.selectedIndex = prev;
+                select.dispatchEvent(new Event('change'));
+            };
 
             // Captura o código fonte inicial para exportação (pode falhar em file://)
             fetch(window.location.href).then(function (r) { return r.text(); }).then(function (t) { appSource = t; }).catch(function () { });
