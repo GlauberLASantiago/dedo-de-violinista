@@ -743,8 +743,29 @@
             margin: 0 !important;
         }
 
-        body.focus-mode .body>div:first-child>*:not(#btnExitFocus) {
+        body.focus-mode .body>div:first-child>*:not(#btnExitFocus):not(#focusModeBar) {
             display: none !important;
+        }
+
+        /* ─── Barra de controles do Modo Foco ─── */
+        #focusModeBar {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        body.focus-mode #focusModeBar {
+            display: flex !important;
+        }
+
+        .focus-bar-sep {
+            width: 1px;
+            height: 26px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 2px;
+            margin: 0 4px;
+            flex-shrink: 0;
         }
 
         #btnExitFocus {
@@ -859,6 +880,57 @@
                         <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
                 </button>
+
+                <!-- Barra de controles visível apenas no Modo Foco -->
+                <div id="focusModeBar">
+                    <button class="load-btn btn-hymn" onclick="document.getElementById('btnPrevHymn').click()"
+                        title="Hino Anterior" style="padding:10px 14px; min-width:auto; margin-right:2px;">
+                        <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
+                            viewBox="0 0 24 24">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <div class="hymn-wrap" style="position: relative;">
+                        <select id="hymnSelectFocus" class="load-btn btn-hymn"
+                            style="appearance: none; padding-right: 32px; border: none; outline: none; cursor: pointer;">
+                            <option value="">📖 Hinos Novo Cântico...</option>
+                        </select>
+                        <svg class="icon-svg"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 14px; height: 14px; color: #fff;"
+                            viewBox="0 0 24 24">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                    <button class="load-btn btn-hymn" onclick="document.getElementById('btnNextHymn').click()"
+                        title="Próximo Hino" style="padding:10px 14px; min-width:auto; margin-left:2px;">
+                        <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
+                            viewBox="0 0 24 24">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+
+                    <span class="focus-bar-sep"></span>
+
+                    <button class="btn btn-play" onclick="document.getElementById('bp').click()" title="Play">
+                        <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Play
+                    </button>
+                    <button class="btn btn-pause" onclick="document.getElementById('bpa').click()" title="Pause">
+                        <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                        Pause
+                    </button>
+                    <button class="btn btn-stop" onclick="document.getElementById('bs').click()" title="Stop">
+                        <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
+                            <rect x="4" y="4" width="16" height="16"></rect>
+                        </svg>
+                        Stop
+                    </button>
+                </div>
 
                 <button id="btnExitFocus" style="display:none;">
                     <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;"
@@ -2085,6 +2157,15 @@
                         }
                     });
 
+                    // Sincroniza as opções com o seletor do Modo Foco
+                    var fSelLoad = document.getElementById('hymnSelectFocus');
+                    if (fSelLoad) {
+                        fSelLoad.innerHTML = '';
+                        for (var ki = 0; ki < select.options.length; ki++) {
+                            fSelLoad.appendChild(select.options[ki].cloneNode(true));
+                        }
+                    }
+
                     if (hinosEncontrados === 0) {
                         select.options[0].textContent = "⚠️ Nenhum XML na pasta";
                     }
@@ -2101,7 +2182,18 @@
                 var name = this.options[this.selectedIndex].text;
                 document.getElementById('fname').textContent = "Carregando " + name + "...";
                 await loadFromUrl(url, name);
-                this.value = ""; // Retorna para o placeholder 
+                this.value = ""; // Retorna para o placeholder
+                // Sincroniza o seletor do Modo Foco
+                var fSelChg = document.getElementById('hymnSelectFocus');
+                if (fSelChg) fSelChg.value = "";
+            });
+
+            // Seletor de hinos do Modo Foco — delega para o seletor principal
+            document.getElementById('hymnSelectFocus').addEventListener('change', function () {
+                if (!this.value) return;
+                var mainSel = document.getElementById('hymnSelect');
+                mainSel.value = this.value;
+                mainSel.dispatchEvent(new Event('change'));
             });
 
             document.getElementById('btnNextHymn').onclick = function () {
@@ -2258,23 +2350,7 @@
                 updateFingerboard(activeNotes);
             };
 
-            document.getElementById('score').addEventListener('click', function (ev) {
-                if (!rawXml) return;
-                if (scoreClickTimer) clearTimeout(scoreClickTimer);
-                var detail = ev.detail;
-                scoreClickTimer = setTimeout(async function () {
-                    scoreClickTimer = null;
-                    if (detail >= 3) { await restartFromBeginningAndPlay(); return; }
-                    if (detail === 2) { stopPlayback(true); return; }
-                    if (run) { pausePlayback(); }
-                    else if (partInsts.length && ac) {
-                        run = true;
-                        document.getElementById('bp').classList.add('playing');
-                        var startT = pat || getRangeStartTime();
-                        await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
-                    }
-                }, 250);
-            });
+
 
             /* ─── Modo Foco ─── */
             function toggleFocusMode() {
