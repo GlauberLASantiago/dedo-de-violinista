@@ -873,11 +873,33 @@
                 border-radius: 0;
             }
 
-            /* Ajuste extra para os controles do Modo Foco */
+            /* Ajuste extra para os controles do Modo Foco: pequena e em linha única */
             #focusModeBar {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 8px;
+                flex-wrap: nowrap !important;
+                justify-content: flex-start;
+                gap: 5px;
+                padding: 4px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                width: 100%;
+            }
+
+            #focusModeBar::-webkit-scrollbar {
+                display: none;
+            }
+
+            #focusModeBar .btn,
+            #focusModeBar .load-btn,
+            #focusModeBar .hymn-wrap .load-btn {
+                height: 36px !important;
+                font-size: 13px !important;
+                padding: 0 10px !important;
+                flex-shrink: 0;
+            }
+
+            /* Esconde o texto dos botões de play/pause/stop no modo foco do celular para caber tudo */
+            #focusModeBar .btn span {
+                display: none;
             }
         }
     </style>
@@ -1257,6 +1279,7 @@
             var evs = [], ac = null, sc = [], sat = 0, pat = 0, run = false, rawXml = '', appSource = '';
             var drumPlayer = new WebAudioFontPlayer();
             var cursorTimer = null, cursorSteps = [], cursorIndex = 0;
+            var metronomeAnchorTime = 0;
             var inputGain = null, masterGain = null, dryGain = null, wetGain = null, convolver = null;
             var playbackEndTimer = null, pieceEnd = 0;
             var scoreClickTimer = null;
@@ -1511,6 +1534,7 @@
             function buildMeasureTimeMap() {
                 measureTimeMap = {};
                 measureTimeArray = [];
+                metronomeAnchorTime = 0;
                 minMeasureNumber = 1;
                 maxMeasureNumber = 1;
                 if (!osmd || !osmd.cursor) return;
@@ -1544,6 +1568,16 @@
                         it.moveToNext();
                     }
                     osmd.cursor.reset();
+                    
+                    // Define a âncora do metrônomo (o início do primeiro compasso "cheio")
+                    // Se o primeiro compasso for uma anacruse, o segundo compasso (index 1) será a nossa âncora de batida.
+                    if (measureTimeArray.length > 1) {
+                        // Verifica se o primeiro compasso parece ser uma anacruse (tempo de compasso 2 != múltiplo exato de beatLen)
+                        var firstMeasureDur = measureTimeArray[1].t;
+                        var isAnacrusis = (Math.abs(firstMeasureDur % beatLen) > 0.01);
+                        metronomeAnchorTime = isAnacrusis ? firstMeasureDur : 0;
+                    }
+
                     totalMeasures = maxMeasureNumber;
                 } catch (e) {
                     console.warn('buildMeasureTimeMap error:', e);
@@ -2071,7 +2105,8 @@
             async function scheduleMetronome(offset) {
                 if (!document.getElementById('metCheck').checked) return;
                 var beatLen = getMetronomeBeatLen();
-                nextMetTime = Math.ceil(offset / beatLen) * beatLen;
+                var anchor = metronomeAnchorTime || 0;
+                nextMetTime = anchor + Math.ceil((offset - anchor) / beatLen) * beatLen;
             }
 
             async function scheduler() {
@@ -2103,7 +2138,10 @@
 
                 if (isMetEnabled || countInVal > 0) {
                     var beatLen = getMetronomeBeatLen();
-                    if (nextMetTime < currentV) nextMetTime = Math.ceil(currentV / beatLen) * beatLen;
+                    var anchor = metronomeAnchorTime || 0;
+                    if (nextMetTime < currentV) {
+                        nextMetTime = anchor + Math.ceil((currentV - anchor) / beatLen) * beatLen;
+                    }
                     while (nextMetTime < lookAheadLimit && nextMetTime < rangeEndT + 0.05) {
                         var whenM = sat + nextMetTime;
                         if (whenM >= now) {
@@ -2174,7 +2212,7 @@
                 // Ajuste de zoom proporcional para mobile no carregamento inicial
                 var zoomEl = document.getElementById('zoomInp');
                 if (window.innerWidth < 768 && zoomEl.value == "100") {
-                    zoomEl.value = "65";
+                    zoomEl.value = "50";
                 }
                 osmd.Zoom = (+zoomEl.value || 100) / 100;
 
@@ -2455,9 +2493,18 @@
                 var isFocus = document.body.classList.toggle('focus-mode');
                 if (rawXml) {
                     var currentZoom = +document.getElementById('zoomInp').value || 100;
-                    // No modo foco, aumenta um pouco o zoom se estiver baixo para aproveitar a tela
-                    if (isFocus && currentZoom < 120) osmd.Zoom = 1.25;
-                    else osmd.Zoom = currentZoom / 100;
+                    
+                    if (isFocus) {
+                        if (window.innerWidth < 768) {
+                            osmd.Zoom = 0.5; // Força 50% no foco mobile
+                        } else if (currentZoom < 120) {
+                            osmd.Zoom = 1.25; // Comportamento desktop
+                        } else {
+                            osmd.Zoom = currentZoom / 100;
+                        }
+                    } else {
+                        osmd.Zoom = currentZoom / 100;
+                    }
 
                     setTimeout(function () {
                         osmd.render();
