@@ -857,9 +857,12 @@
                     Stop
                 </button>
 
-                <div class="bpm-wrap">
+                <div class="range-wrap">
                     <label for="bpm">BPM</label>
-                    <input type="number" id="bpm" value="100" min="20" max="400">
+                    <input type="number" id="bpm" value="100" min="20" max="400" step="1">
+                    <label class="check-wrap" style="font-size: 10px; margin-left: 2px; color: var(--text-sub);" title="Reduzir 30 BPM automaticamente ao carregar">
+                        <input type="checkbox" id="bpmRedCheck" checked> -30
+                    </label>
                 </div>
 
                 <div class="met-wrap">
@@ -1065,6 +1068,7 @@
             var cursorStepsCache = { bpm: null, xml: null, mode: 3 };
             var totalMeasures = 0, playbackStartOffset = 0;
             var xmlNoteMap = {}; // Mapa manual de notas extraídas do MusicXML (indexado por partIndex)
+            var originalXmlBpm = null;
 
             /* ─── Fingerboard Logic ─── */
             function getViolinFingering(midi) {
@@ -1930,8 +1934,11 @@
             }
 
             async function afterXmlLoaded() {
-                var detectedBpm = extractTempoFromXml(rawXml);
-                if (detectedBpm) document.getElementById('bpm').value = detectedBpm;
+                originalXmlBpm = extractTempoFromXml(rawXml);
+                if (originalXmlBpm) {
+                    var reduce = document.getElementById('bpmRedCheck').checked;
+                    document.getElementById('bpm').value = reduce ? Math.max(20, originalXmlBpm - 30) : originalXmlBpm;
+                }
 
                 await osmd.load(rawXml);
                 osmd.render();
@@ -2124,6 +2131,13 @@
                     stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer();
                     scheduleFrom(currentOffset).then(function () { startCursorFollow(currentOffset); });
                 } else moveCursorToTime(pat || 0);
+            };
+
+            document.getElementById('bpmRedCheck').onchange = function () {
+                if (!rawXml || !originalXmlBpm) return;
+                var reduce = this.checked;
+                document.getElementById('bpm').value = reduce ? Math.max(20, originalXmlBpm - 30) : originalXmlBpm;
+                document.getElementById('bpm').dispatchEvent(new Event('change'));
             };
 
             document.getElementById('cursorMode').onchange = function () {
