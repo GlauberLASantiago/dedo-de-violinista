@@ -801,6 +801,85 @@
             box-shadow: none;
             padding: 0;
         }
+
+        /* ─── Responsividade para Celular ─── */
+        @media (max-width: 768px) {
+            body {
+                padding: 6px 4px;
+            }
+
+            .card {
+                border-radius: 12px;
+            }
+
+            .body {
+                padding: 16px 12px;
+            }
+
+            /* Menu maior no mobile */
+            .btn,
+            .load-btn,
+            .bpm-wrap,
+            .met-wrap,
+            .rev-wrap,
+            .zoom-wrap,
+            .cursor-wrap,
+            .range-wrap,
+            .hymn-wrap .load-btn {
+                height: 46px;
+                font-size: 15px;
+                padding: 0 16px;
+            }
+
+            .load-btn span,
+            .btn span {
+                font-size: 14px;
+            }
+
+            .bpm-wrap input[type="number"],
+            .rev-wrap input,
+            .zoom-wrap input,
+            .range-num {
+                font-size: 17px;
+                width: 55px;
+            }
+
+            .controls {
+                gap: 10px;
+                justify-content: center;
+            }
+
+            /* Braço e Partitura na largura total */
+            .fingerboard-panel {
+                width: 100%;
+                max-width: none !important;
+                margin: 0 0 20px 0;
+            }
+
+            .fb-layout-wrap {
+                padding: 0;
+                margin: 0 -12px 20px -12px;
+                /* Compensa o padding da .body */
+                width: calc(100% + 24px);
+            }
+
+            #score {
+                width: calc(100% + 24px);
+                margin: 15px -12px 0 -12px;
+                /* Compensa o padding da .body */
+                padding: 10px 4px;
+                border-left: none;
+                border-right: none;
+                border-radius: 0;
+            }
+
+            /* Ajuste extra para os controles do Modo Foco */
+            #focusModeBar {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+        }
     </style>
 </head>
 
@@ -885,7 +964,8 @@
                 <div id="focusModeBar">
                     <button class="load-btn btn-hymn" onclick="document.getElementById('btnPrevHymn').click()"
                         title="Hino Anterior" style="padding:10px 14px; min-width:auto; margin-right:2px;">
-                        <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
+                        <svg class="icon-svg"
+                            style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
                             viewBox="0 0 24 24">
                             <polyline points="15 18 9 12 15 6"></polyline>
                         </svg>
@@ -903,7 +983,8 @@
                     </div>
                     <button class="load-btn btn-hymn" onclick="document.getElementById('btnNextHymn').click()"
                         title="Próximo Hino" style="padding:10px 14px; min-width:auto; margin-left:2px;">
-                        <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
+                        <svg class="icon-svg"
+                            style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
                             viewBox="0 0 24 24">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
@@ -1207,10 +1288,10 @@
                     // Exemplo na corda Lá: Dó# → dedo 2 (2º dedo alto); Réb → dedo 3 (3º dedo baixo).
                     var key = step + ':' + Math.round(alter);
                     var fingerMaps = {
-                        'G': { 'G:0':0, 'G:1':1, 'A:-1':1, 'A:0':1, 'A:1':2, 'B:-1':2, 'B:0':2, 'C:0':3, 'C:1':3, 'D:-1':4 },
-                        'D': { 'D:0':0, 'D:1':1, 'E:-1':1, 'E:0':1, 'F:0':2, 'F:1':2, 'G:-1':3, 'G:0':3, 'G:1':3, 'A:-1':4 },
-                        'A': { 'A:0':0, 'A:1':1, 'B:-1':1, 'B:0':1, 'C:0':2, 'C:1':2, 'D:-1':3, 'D:0':3, 'D:1':3, 'E:-1':4 },
-                        'E': { 'E:0':0, 'F:0':1, 'F:1':1, 'G:-1':2, 'G:0':2, 'G:1':2, 'A:-1':3, 'A:0':3, 'A:1':3, 'B:-1':4, 'B:0':4 }
+                        'G': { 'G:0': 0, 'G:1': 1, 'A:-1': 1, 'A:0': 1, 'A:1': 2, 'B:-1': 2, 'B:0': 2, 'C:0': 3, 'C:1': 3, 'D:-1': 4 },
+                        'D': { 'D:0': 0, 'D:1': 1, 'E:-1': 1, 'E:0': 1, 'F:0': 2, 'F:1': 2, 'G:-1': 3, 'G:0': 3, 'G:1': 3, 'A:-1': 4 },
+                        'A': { 'A:0': 0, 'A:1': 1, 'B:-1': 1, 'B:0': 1, 'C:0': 2, 'C:1': 2, 'D:-1': 3, 'D:0': 3, 'D:1': 3, 'E:-1': 4 },
+                        'E': { 'E:0': 0, 'F:0': 1, 'F:1': 1, 'G:-1': 2, 'G:0': 2, 'G:1': 2, 'A:-1': 3, 'A:0': 3, 'A:1': 3, 'B:-1': 4, 'B:0': 4 }
                     };
                     var map = fingerMaps[string];
                     finger = (map && map[key] !== undefined) ? map[key] : [0, 1, 1, 2, 2, 3, 4, 4][semi];
@@ -1371,19 +1452,22 @@
 
                 var bpm = +document.getElementById('bpm').value || 100;
 
-                // Encontra o compasso actual usando measureTimeMap (construído pelo OSMD)
-                var bestM = -1, bestT = -1;
-                for (var mn in measureTimeMap) {
-                    var t = measureTimeMap[mn];
-                    if (t <= currentSec + 0.01 && t > bestT) { bestT = t; bestM = parseInt(mn); }
+                // Encontra o compasso actual usando a ordem cronológica estrita (mIdx)
+                var bestIdx = -1, bestT = -1, bestM = -1;
+                for (var i = 0; i < measureTimeArray.length; i++) {
+                    if (!measureTimeArray[i]) continue;
+                    var t = measureTimeArray[i].t;
+                    if (t <= currentSec + 0.01 && t > bestT) { 
+                        bestT = t; 
+                        bestIdx = measureTimeArray[i].index; 
+                        bestM = measureTimeArray[i].m; 
+                    }
                 }
-                if (bestM === -1) return { notes: [], note: null };
+                if (bestIdx === -1) return { notes: [], note: null };
 
-                // Localiza a entrada do compasso no mapa XML
-                var mapEntry = null;
-                for (var i = 0; i < currentMap.length; i++) {
-                    if (currentMap[i].measureNumber === bestM) { mapEntry = currentMap[i]; break; }
-                }
+                // Localiza a entrada do compasso no mapa XML diretamente pela posição física da TAG
+                // Isso ignora se houverem dois compassos com o mesmo número impresso (barras no meio)
+                var mapEntry = currentMap[bestIdx];
                 if (!mapEntry || !mapEntry.notes.length) return { notes: [], note: null };
 
                 // Calcula ticks decorridos dentro do compasso
@@ -1420,11 +1504,13 @@
             /* ─── Range state ─────────────────────────────────────────── */
             var rangeFrom = 1, rangeTo = 1;
             var measureTimeMap = {};
+            var measureTimeArray = [];
             var minMeasureNumber = 1;
             var maxMeasureNumber = 1;
 
             function buildMeasureTimeMap() {
                 measureTimeMap = {};
+                measureTimeArray = [];
                 minMeasureNumber = 1;
                 maxMeasureNumber = 1;
                 if (!osmd || !osmd.cursor) return;
@@ -1446,7 +1532,11 @@
                                     measureNumber = srcMeasure.MeasureNumber;
                                 }
                             }
-                            measureTimeMap[measureNumber] = real * 4 * beatLen;
+                            if (measureTimeMap[measureNumber] === undefined) {
+                                measureTimeMap[measureNumber] = real * 4 * beatLen;
+                            }
+                            measureTimeArray.push({ index: mIdx, m: measureNumber, t: real * 4 * beatLen });
+                            
                             if (lastM === -1) minMeasureNumber = measureNumber;
                             maxMeasureNumber = measureNumber;
                             lastM = mIdx;
