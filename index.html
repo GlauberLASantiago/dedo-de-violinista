@@ -897,8 +897,9 @@
                 flex-shrink: 0;
             }
 
-            /* Esconde o texto dos botões de play/pause/stop no modo foco do celular para caber tudo */
-            #focusModeBar .btn span {
+            /* Esconde o texto dos botões no modo foco para deixar apenas símbolos */
+            #focusModeBar .btn span,
+            #btnExitFocus span {
                 display: none;
             }
         }
@@ -965,7 +966,7 @@
                 <div class="hymn-wrap" style="position: relative;">
                     <select id="hymnSelect" class="load-btn btn-hymn"
                         style="appearance: none; padding-right: 32px; border: none; outline: none; cursor: pointer;">
-                        <option value="">📖 Hinos Novo Cântico...</option>
+                        <option value="">📖 HNC...</option>
                     </select>
                     <svg class="icon-svg"
                         style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 14px; height: 14px; color: #fff;"
@@ -995,7 +996,7 @@
                     <div class="hymn-wrap" style="position: relative;">
                         <select id="hymnSelectFocus" class="load-btn btn-hymn"
                             style="appearance: none; padding-right: 32px; border: none; outline: none; cursor: pointer;">
-                            <option value="">📖 Hinos Novo Cântico...</option>
+                            <option value="">📖 HNC...</option>
                         </select>
                         <svg class="icon-svg"
                             style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 14px; height: 14px; color: #fff;"
@@ -1018,30 +1019,26 @@
                         <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
                             <polygon points="5 3 19 12 5 21 5 3"></polygon>
                         </svg>
-                        Play
                     </button>
                     <button class="btn btn-pause" onclick="document.getElementById('bpa').click()" title="Pause">
                         <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
                             <rect x="6" y="4" width="4" height="16"></rect>
                             <rect x="14" y="4" width="4" height="16"></rect>
                         </svg>
-                        Pause
                     </button>
                     <button class="btn btn-stop" onclick="document.getElementById('bs').click()" title="Stop">
                         <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
                             <rect x="4" y="4" width="16" height="16"></rect>
                         </svg>
-                        Stop
                     </button>
                 </div>
 
-                <button id="btnExitFocus" style="display:none;">
+                <button id="btnExitFocus" style="display:none;" title="Sair do Modo Foco">
                     <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;"
                         viewBox="0 0 24 24">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
-                    <span>Sair do Modo Foco</span>
                 </button>
             </div>
 
