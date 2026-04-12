@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Dedo de violinista</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎻</text></svg>">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎻</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -637,6 +638,129 @@
             height: 28px;
             color: #fff;
         }
+
+        /* ─── Note Display (Lateral) ─── */
+        .fb-layout-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin: 0 auto 32px;
+            max-width: 1000px;
+        }
+        .note-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 86px;
+            height: 86px;
+            background: var(--ctrl-bg);
+            border-radius: 50%;
+            border: 3px solid var(--status-info);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .note-display::after {
+            content: "";
+            position: absolute;
+            top: -6px; left: -6px; right: -6px; bottom: -6px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .note-display-main {
+            font-size: 34px;
+            font-weight: 800;
+            color: var(--text-main);
+            text-align: center;
+            letter-spacing: -1px;
+            transition: color 0.1s;
+        }
+        .note-display-main.active {
+            color: var(--status-info);
+            text-shadow: 0 0 15px rgba(217, 119, 6, 0.3);
+        }
+
+        /* ─── Modo Ocultar Auxílios ─── */
+        .hide-visual-aids .finger-dot,
+        .hide-visual-aids .fb-tape,
+        .hide-visual-aids .str-labels,
+        .hide-visual-aids .note-display {
+            display: none !important;
+        }
+        
+        /* Ajuste do layout quando o mostrador lateral some */
+        .hide-visual-aids .fb-layout-wrap {
+            gap: 0;
+        }
+
+        #btnToggleAids, #btnFocus {
+            background-color: #57534e;
+            color: #fff;
+        }
+        #btnToggleAids:hover, #btnFocus:hover {
+            background-color: #44403c;
+        }
+
+        /* ─── Modo Foco (Apenas Partitura) ─── */
+        body.focus-mode {
+            background-color: #fff;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        body.focus-mode .hd,
+        body.focus-mode .top-bar,
+        body.focus-mode .fname,
+        body.focus-mode .controls,
+        body.focus-mode .fb-layout-wrap,
+        body.focus-mode .visualizer-panel,
+        body.focus-mode .credits-footer,
+        body.focus-mode .inst-guide {
+            display: none !important;
+        }
+        
+        /* Área superior minimalista no modo foco */
+        body.focus-mode .body > div:first-child {
+            justify-content: center !important;
+            padding: 24px 0 10px !important;
+            margin: 0 !important;
+        }
+        body.focus-mode .body > div:first-child > *:not(#btnExitFocus) {
+            display: none !important;
+        }
+
+        #btnExitFocus {
+            display: none;
+            background: #57534e;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        #btnExitFocus:hover {
+            background: #44403c;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+        }
+        body.focus-mode #btnExitFocus {
+            display: inline-flex !important;
+        }
+        body.focus-mode .card {
+            max-width: 100%;
+            margin: 0;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+        }
     </style>
 </head>
 
@@ -678,7 +802,8 @@
                     <input type="file" id="fi" accept=".xml,.musicxml,.mxl">
                 </label>
 
-                <button class="load-btn" id="btnExport" style="background:#0284c7;" disabled title="Salvar este app com a partitura atual embutida">
+                <button class="load-btn" id="btnExport" style="background:#0284c7;" disabled
+                    title="Salvar este app com a partitura atual embutida">
                     <svg class="icon-svg" style="width:16px;height:16px;margin-right:6px;" viewBox="0 0 24 24">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="7 10 12 15 17 10"></polyline>
@@ -689,13 +814,24 @@
 
                 <!-- Novo Botão Dropdown para o Hinário -->
                 <div class="hymn-wrap" style="position: relative;">
-                    <select id="hymnSelect" class="load-btn btn-hymn" style="appearance: none; padding-right: 32px; border: none; outline: none; cursor: pointer;">
+                    <select id="hymnSelect" class="load-btn btn-hymn"
+                        style="appearance: none; padding-right: 32px; border: none; outline: none; cursor: pointer;">
                         <option value="">📖 Hinos Novo Cântico...</option>
                     </select>
-                    <svg class="icon-svg" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 14px; height: 14px; color: #fff;" viewBox="0 0 24 24">
+                    <svg class="icon-svg"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 14px; height: 14px; color: #fff;"
+                        viewBox="0 0 24 24">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </div>
+
+                <button id="btnExitFocus" style="display:none;">
+                    <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    <span>Sair do Modo Foco</span>
+                </button>
             </div>
 
             <div class="fname" id="fname">Nenhum arquivo selecionado</div>
@@ -765,6 +901,14 @@
                     </select>
                 </div>
 
+                <div class="cursor-wrap">
+                    <label for="instSelect">Som</label>
+                    <select id="instSelect" title="Escolher o som dos instrumentos">
+                        <option value="violin" selected>Violino</option>
+                        <option value="acoustic_grand_piano">Piano</option>
+                    </select>
+                </div>
+
                 <div class="range-wrap" title="Definir trecho para execução">
                     <label>Trecho</label>
                     <input type="number" id="rangeFrom" class="range-num" value="1" min="1" title="Compasso inicial"
@@ -774,7 +918,27 @@
                         disabled>
                 </div>
 
-                <div class="cursor-wrap" id="guidePartWrap" style="display:none;" title="Escolher qual instrumento será exibido no braço do violino">
+                <button class="btn" id="btnToggleAids" title="Ocultar/Mostrar indicações visuais (Dedilhados, Guias e Nomes)">
+                    <svg id="aidsIconShow" class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <svg id="aidsIconHide" class="icon-svg" style="width:14px;height:14px;display:none;" viewBox="0 0 24 24">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                    <span>Auxílios</span>
+                </button>
+
+                <button class="btn" id="btnFocus" title="Modo Foco: Mostrar apenas a partitura">
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;" viewBox="0 0 24 24">
+                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path>
+                    </svg>
+                    <span>Foco</span>
+                </button>
+
+                <div class="cursor-wrap" id="guidePartWrap" style="display:none;"
+                    title="Escolher qual instrumento será exibido no braço do violino">
                     <label for="guidePartSelect">Guia</label>
                     <select id="guidePartSelect"></select>
                 </div>
@@ -782,42 +946,48 @@
                 <div id="partsPanel" class="parts-panel" style="display:none;"></div>
             </div>
 
-            <!-- Fingerboard Virtual Atualizado -->
-            <div class="fingerboard-panel">
-                <div class="fb-wrapper">
-                    <div class="str-labels">
-                        <div class="lbl" id="lbl-E" style="top: 20%;">Mi</div>
-                        <div class="lbl" id="lbl-A" style="top: 40%;">Lá</div>
-                        <div class="lbl" id="lbl-D" style="top: 60%;">Ré</div>
-                        <div class="lbl" id="lbl-G" style="top: 80%;">Sol</div>
-                    </div>
-                    <div class="fb-nut"></div>
-                    <div class="fb-board">
-                        <div class="fb-wood-pattern"></div>
-                        <div class="fb-tape" style="left: 25%;"></div>
-                        <div class="fb-tape" style="left: 50%;"></div>
-                        <div class="fb-tape" style="left: 62.5%;"></div>
-                        <div class="fb-tape" style="left: 87.5%;"></div>
+            <!-- Fingerboard Virtual Atualizado com Mostrador Lateral -->
+            <div class="fb-layout-wrap">
+                <div class="note-display" id="noteDisplay" title="Nota atual">
+                    <span class="note-display-main" id="noteDisplayMain">—</span>
+                </div>
 
-                        <div class="vb-string" id="vb-string-E">
-                            <div class="str-base str-e"></div>
-                            <div class="string-active"></div>
-                            <div class="finger-dot"></div>
+                <div class="fingerboard-panel" style="margin: 0; flex: 1; max-width: 850px;">
+                    <div class="fb-wrapper">
+                        <div class="str-labels">
+                            <div class="lbl" id="lbl-E" style="top: 20%;">Mi</div>
+                            <div class="lbl" id="lbl-A" style="top: 40%;">Lá</div>
+                            <div class="lbl" id="lbl-D" style="top: 60%;">Ré</div>
+                            <div class="lbl" id="lbl-G" style="top: 80%;">Sol</div>
                         </div>
-                        <div class="vb-string" id="vb-string-A">
-                            <div class="str-base str-a"></div>
-                            <div class="string-active"></div>
-                            <div class="finger-dot"></div>
-                        </div>
-                        <div class="vb-string" id="vb-string-D">
-                            <div class="str-base str-d"></div>
-                            <div class="string-active"></div>
-                            <div class="finger-dot"></div>
-                        </div>
-                        <div class="vb-string" id="vb-string-G">
-                            <div class="str-base str-g"></div>
-                            <div class="string-active"></div>
-                            <div class="finger-dot"></div>
+                        <div class="fb-nut"></div>
+                        <div class="fb-board">
+                            <div class="fb-wood-pattern"></div>
+                            <div class="fb-tape" style="left: 25%;"></div>
+                            <div class="fb-tape" style="left: 50%;"></div>
+                            <div class="fb-tape" style="left: 62.5%;"></div>
+                            <div class="fb-tape" style="left: 87.5%;"></div>
+
+                            <div class="vb-string" id="vb-string-E">
+                                <div class="str-base str-e"></div>
+                                <div class="string-active"></div>
+                                <div class="finger-dot"></div>
+                            </div>
+                            <div class="vb-string" id="vb-string-A">
+                                <div class="str-base str-a"></div>
+                                <div class="string-active"></div>
+                                <div class="finger-dot"></div>
+                            </div>
+                            <div class="vb-string" id="vb-string-D">
+                                <div class="str-base str-d"></div>
+                                <div class="string-active"></div>
+                                <div class="finger-dot"></div>
+                            </div>
+                            <div class="vb-string" id="vb-string-G">
+                                <div class="str-base str-g"></div>
+                                <div class="string-active"></div>
+                                <div class="finger-dot"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -894,6 +1064,7 @@
             var scoreClickTimer = null;
             var cursorStepsCache = { bpm: null, xml: null, mode: 3 };
             var totalMeasures = 0, playbackStartOffset = 0;
+            var xmlNoteMap = {}; // Mapa manual de notas extraídas do MusicXML (indexado por partIndex)
 
             /* ─── Fingerboard Logic ─── */
             function getViolinFingering(midi) {
@@ -949,6 +1120,159 @@
                         if (lbl) lbl.classList.remove('active-open');
                     }
                 });
+            }
+
+            /* ─── Parser Manual MusicXML (fonte da verdade do pitch) ────────────────────
+             * Regras estritas: lê apenas a primeira <part>, Staff 1.
+             * Lida com <forward>, <backup>, <chord>, <grace> e múltiplas vozes.
+             * ─────────────────────────────────────────────────────────────────────────── */
+            function buildXmlNoteMap(xmlString) {
+                xmlNoteMap = {};
+                if (!xmlString) return;
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(xmlString, 'text/xml');
+                var parts = doc.querySelectorAll('part');
+                if (!parts.length) return;
+
+                parts.forEach(function (part, partIdx) {
+                    var measures = part.querySelectorAll('measure');
+                    var partMap = [];
+                    var currentDivisions = 1; // fallback por parte
+
+                    measures.forEach(function (measure) {
+                        var measureNumber = parseInt(measure.getAttribute('number')) || 0;
+                        var divEl = measure.querySelector('attributes > divisions');
+                        if (divEl) currentDivisions = parseInt(divEl.textContent) || currentDivisions;
+                        var divisions = currentDivisions;
+
+                        var current_time = 0;
+                        var prev_duration = 0;
+                        var notes = [];
+
+                        var children = measure.children;
+                        for (var ci = 0; ci < children.length; ci++) {
+                            var el = children[ci];
+                            var tag = el.tagName;
+
+                            if (tag === 'forward') {
+                                var fDurEl = el.querySelector('duration');
+                                current_time += fDurEl ? (parseInt(fDurEl.textContent) || 0) : 0;
+                                prev_duration = 0;
+                            } else if (tag === 'backup') {
+                                var bDurEl = el.querySelector('duration');
+                                var bDur = bDurEl ? (parseInt(bDurEl.textContent) || 0) : 0;
+                                current_time = Math.max(0, current_time - bDur);
+                                prev_duration = 0;
+                            } else if (tag === 'note') {
+                                if (el.querySelector('grace')) continue;
+                                var isChord = !!el.querySelector('chord');
+                                var isRest = !!el.querySelector('rest');
+                                var durEl = el.querySelector('duration');
+                                var dur = durEl ? (parseInt(durEl.textContent) || 0) : 0;
+
+                                var staffEl = el.querySelector('staff');
+                                var staffNum = staffEl ? parseInt(staffEl.textContent) : 1;
+                                var startTime = isChord ? Math.max(0, current_time - prev_duration) : current_time;
+
+                                if (staffNum === 1 && !isRest) {
+                                    var pitchEl = el.querySelector('pitch');
+                                    if (pitchEl) {
+                                        var stepEl = pitchEl.querySelector('step');
+                                        var step = stepEl ? stepEl.textContent.trim() : 'C';
+                                        var alterEl = pitchEl.querySelector('alter');
+                                        var alter = alterEl ? parseFloat(alterEl.textContent) : 0;
+                                        var octaveEl = pitchEl.querySelector('octave');
+                                        var octave = octaveEl ? parseInt(octaveEl.textContent) : 4;
+                                        var stepToSemi = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+                                        var midi = (octave + 1) * 12 + (stepToSemi[step] || 0) + Math.round(alter);
+                                        notes.push({
+                                            beat: 1 + (startTime / divisions),
+                                            start_time: startTime,
+                                            duration: dur,
+                                            step: step,
+                                            alter: alter,
+                                            octave: octave,
+                                            midi: midi
+                                        });
+                                    }
+                                }
+                                if (!isChord) {
+                                    current_time += dur;
+                                    prev_duration = dur;
+                                }
+                            }
+                        }
+                        notes.sort(function (a, b) { return a.start_time - b.start_time; });
+                        partMap.push({ measureNumber: measureNumber, divisions: divisions, notes: notes });
+                    });
+                    xmlNoteMap[partIdx] = partMap;
+                });
+            }
+
+            function getNoteNamePt(step, alter) {
+                var names = { C: 'Dó', D: 'Ré', E: 'Mi', F: 'Fá', G: 'Sol', A: 'Lá', B: 'Si' };
+                var name = names[step] || step;
+                if (alter >= 0.9) name += '♯';
+                else if (alter <= -0.9) name += '♭';
+                return name;
+            }
+
+            /**
+             * Devolve os MIDIs activos e a nota corrente no instante currentSec (segundos desde o início da peça),
+             * consultando o parser MusicXML manual em vez dos objectos internos do OSMD.
+             */
+            function getActiveMidisFromXmlMap(currentSec) {
+                var gSelect = document.getElementById('guidePartSelect');
+                var selectedPartIdx = gSelect ? parseInt(gSelect.value) : 0;
+                var currentMap = xmlNoteMap[selectedPartIdx];
+                if (!currentMap || !currentMap.length) return { midis: [], note: null };
+
+                var bpm = +document.getElementById('bpm').value || 100;
+
+                // Encontra o compasso actual usando measureTimeMap (construído pelo OSMD)
+                var bestM = -1, bestT = -1;
+                for (var mn in measureTimeMap) {
+                    var t = measureTimeMap[mn];
+                    if (t <= currentSec + 0.01 && t > bestT) { bestT = t; bestM = parseInt(mn); }
+                }
+                if (bestM === -1) return { midis: [], note: null };
+
+                // Localiza a entrada do compasso no mapa XML
+                var mapEntry = null;
+                for (var i = 0; i < currentMap.length; i++) {
+                    if (currentMap[i].measureNumber === bestM) { mapEntry = currentMap[i]; break; }
+                }
+                if (!mapEntry || !mapEntry.notes.length) return { midis: [], note: null };
+
+                // Calcula ticks decorridos dentro do compasso
+                // 1 beat (semínima) = 60/bpm segundos → 1 tick = 60/(bpm*divisions) segundos
+                var elapsedSec = Math.max(0, currentSec - bestT);
+                var ticksPerSec = mapEntry.divisions * bpm / 60;
+                var elapsedTicks = elapsedSec * ticksPerSec;
+
+                var activeMidis = [], activeNote = null;
+                for (var j = 0; j < mapEntry.notes.length; j++) {
+                    var note = mapEntry.notes[j];
+                    // Margem de 0.5 ticks para compensar imprecisões de tempo
+                    if (note.start_time <= elapsedTicks + 0.5 && note.start_time + note.duration > elapsedTicks) {
+                        activeMidis.push(note.midi);
+                        if (!activeNote) activeNote = { note: note, measureNumber: bestM };
+                    }
+                }
+                return { midis: activeMidis, note: activeNote };
+            }
+
+            function updateNoteDisplay(noteInfo) {
+                var mainEl = document.getElementById('noteDisplayMain');
+                if (!mainEl) return;
+                if (!noteInfo) {
+                    mainEl.textContent = '—';
+                    mainEl.classList.remove('active');
+                    return;
+                }
+                var n = noteInfo.note;
+                mainEl.textContent = getNoteNamePt(n.step, n.alter);
+                mainEl.classList.add('active');
             }
 
             /* ─── Range state ─────────────────────────────────────────── */
@@ -1086,7 +1410,7 @@
                 var el = document.getElementById('countInSelect');
                 var val = el ? parseInt(el.value) : 0;
                 if (!val) return 0;
-                
+
                 var beatLen = getMetronomeBeatLen();
                 var bpm = +document.getElementById('bpm').value || 100;
                 var beatsPerMeasure = 4;
@@ -1100,7 +1424,7 @@
                         else beatsPerMeasure = b;
                     }
                 }
-                
+
                 var startOffset = getRangeStartTime();
                 var pickupBeats = 0;
                 if (startOffset < 0.01 && osmd.Sheet && osmd.Sheet.SourceMeasures && osmd.Sheet.SourceMeasures.length > 0) {
@@ -1114,7 +1438,7 @@
                         }
                     }
                 }
-                
+
                 return Math.max(0, (val * beatsPerMeasure - pickupBeats) * beatLen);
             }
 
@@ -1186,7 +1510,8 @@
                     var name = 'Part ' + (idx + 1);
                     if (inst.NameLabel && inst.NameLabel.text) name = inst.NameLabel.text;
                     else if (inst.name) name = inst.name;
-                    partConfigs.push({ name: name, program: 'violin', vol: 100, oct: 0 });
+                    var currentProg = document.getElementById('instSelect').value || 'violin';
+                    partConfigs.push({ name: name, program: currentProg, vol: 100, oct: 0 });
 
                     if (guideSelect) {
                         var opt = document.createElement('option');
@@ -1269,6 +1594,7 @@
             function resetCursorToStart() {
                 clearCursorTimer();
                 updateFingerboard([]);
+                updateNoteDisplay(null);
                 if (!osmd || !osmd.cursor) return;
                 try {
                     var mode = +document.getElementById('cursorMode').value;
@@ -1367,20 +1693,12 @@
                         // Se estivermos na fase de contagem (tempo negativo ou anterior ao offset), mantém visual parado
                         if (current < playbackStartOffset - 0.01) {
                             updateFingerboard([]);
+                            updateNoteDisplay(null);
                         } else {
-                            // Fingerboard Real-time Update
-                            var activeNotes = [];
-                            var gSelect = document.getElementById('guidePartSelect');
-                            var guidePart = gSelect ? parseInt(gSelect.value) : 0;
-
-                            for (var i = 0; i < evs.length; i++) {
-                                var e = evs[i];
-                                if (e.t > current) break;
-                                if (e.t + e.dur > current && e.part === guidePart) {
-                                    activeNotes.push(e.midi);
-                                }
-                            }
-                            updateFingerboard(activeNotes);
+                            // Fingerboard Real-time Update — usa parser MusicXML manual como fonte da verdade
+                            var xmlResult = getActiveMidisFromXmlMap(current);
+                            updateFingerboard(xmlResult.midis);
+                            updateNoteDisplay(xmlResult.note);
 
                             var curMode = +document.getElementById('cursorMode').value;
                             if (curMode !== -1) {
@@ -1617,6 +1935,7 @@
 
                 await osmd.load(rawXml);
                 osmd.render();
+                buildXmlNoteMap(rawXml); // Parser manual MusicXML — constrói mapa de notas do Staff 1
 
                 resetCursorToStart(); extractCursorSteps();
                 if (ac && ac.state !== 'closed') { try { await ac.close(); } catch (_) { } }
@@ -1646,9 +1965,9 @@
 
             async function loadFromUrl(url, fallbackName) {
                 try {
-                    var resp = await fetch(url); 
+                    var resp = await fetch(url);
                     if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                    
+
                     // Verifica de forma segura se o link aponta para um .mxl (arquivo compactado ZIP)
                     if (url.toLowerCase().split('?')[0].endsWith('.mxl')) {
                         var blob = await resp.blob(); // Pega o arquivo de forma binária
@@ -1656,12 +1975,12 @@
                     } else {
                         rawXml = await resp.text(); // Extração padrão em texto para XML e MusicXML
                     }
-                    
+
                     var meta = extractMetaFromXml(rawXml);
                     document.getElementById('fname').textContent = meta.title || fallbackName || 'Partitura importada';
                     await afterXmlLoaded();
-                } catch (err) { 
-                    console.error('Erro no loadFromUrl:', err); 
+                } catch (err) {
+                    console.error('Erro no loadFromUrl:', err);
                     document.getElementById('fname').textContent = "⚠️ Erro ao carregar partitura";
                 }
             }
@@ -1672,16 +1991,16 @@
                 try {
                     var githubApiUrl = 'https://api.github.com/repos/GlauberLASantiago/dedo-de-violinista/contents/Violinos';
                     var response = await fetch(githubApiUrl);
-                    
+
                     if (!response.ok) {
-                        if(response.status === 404) throw new Error('Pasta não encontrada (404)');
-                        if(response.status === 403) throw new Error('Limite de acesso excedido (403)');
+                        if (response.status === 404) throw new Error('Pasta não encontrada (404)');
+                        if (response.status === 403) throw new Error('Limite de acesso excedido (403)');
                         throw new Error('Erro ' + response.status);
                     }
                     var data = await response.json();
-                    
+
                     var hinosEncontrados = 0;
-                    data.forEach(function(file) {
+                    data.forEach(function (file) {
                         if (file.type === 'file' && (file.name.endsWith('.xml') || file.name.endsWith('.musicxml') || file.name.endsWith('.mxl'))) {
                             var opt = document.createElement('option');
                             opt.value = file.download_url; // Link direto do Raw File
@@ -1691,8 +2010,8 @@
                             hinosEncontrados++;
                         }
                     });
-                    
-                    if(hinosEncontrados === 0) {
+
+                    if (hinosEncontrados === 0) {
                         select.options[0].textContent = "⚠️ Nenhum XML na pasta";
                     }
                 } catch (e) {
@@ -1701,7 +2020,7 @@
                 }
             }
 
-            document.getElementById('hymnSelect').addEventListener('change', async function() {
+            document.getElementById('hymnSelect').addEventListener('change', async function () {
                 if (!this.value) return;
                 var url = this.value;
                 var name = this.options[this.selectedIndex].text;
@@ -1711,7 +2030,7 @@
             });
 
             // Captura o código fonte inicial para exportação (pode falhar em file://)
-            fetch(window.location.href).then(function(r){ return r.text(); }).then(function(t){ appSource = t; }).catch(function(){});
+            fetch(window.location.href).then(function (r) { return r.text(); }).then(function (t) { appSource = t; }).catch(function () { });
 
             function exportHtml() {
                 if (!rawXml) return;
@@ -1721,21 +2040,21 @@
                     var docClone = document.documentElement.cloneNode(true);
                     var sDiv = docClone.querySelector('#score');
                     if (sDiv) sDiv.innerHTML = ''; // Limpa os SVGs pesados gerados pelo OSMD
-                    docClone.querySelectorAll('.playing').forEach(function(el){ el.classList.remove('playing'); });
+                    docClone.querySelectorAll('.playing').forEach(function (el) { el.classList.remove('playing'); });
                     source = "<!DOCTYPE html>\n" + docClone.outerHTML;
                 }
-                
+
                 var fileName = (document.getElementById('fname').textContent || 'dedo-de-violinista').replace(/\s+/g, '_') + '.html';
-                
+
                 // Injeta o XML no lugar do placeholder ou no primeiro script
                 var scriptToInject = 'var EMBEDDED_XML = ' + JSON.stringify(rawXml) + ';';
                 var finalHtml = source.replace(/var EMBEDDED_XML = ``; \/\/ @EMBEDDED_XML_PLACEHOLDER@/, scriptToInject);
-                
+
                 // Garantia caso o comentário do placeholder tenha sumido no outerHTML
                 if (finalHtml === source && source.indexOf(scriptToInject) === -1) {
                     finalHtml = source.replace(/<script>/, '<script>\n' + scriptToInject + '\n');
                 }
-                
+
                 var blob = new Blob([finalHtml], { type: 'text/html' });
                 var link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
@@ -1754,6 +2073,31 @@
 
             // Inicia a requisição da lista do Hinário assim que o app carregar
             loadHymnList();
+
+            /* ─── Lógica de ocultar auxílios ─── */
+            var aidsHidden = localStorage.getItem('visualAidsHidden') === 'true';
+            if (aidsHidden) {
+                document.body.classList.add('hide-visual-aids');
+                updateAidsButton(true);
+            }
+
+            function updateAidsButton(isHidden) {
+                var showIcon = document.getElementById('aidsIconShow');
+                var hideIcon = document.getElementById('aidsIconHide');
+                if (isHidden) {
+                    showIcon.style.display = 'none';
+                    hideIcon.style.display = 'block';
+                } else {
+                    showIcon.style.display = 'block';
+                    hideIcon.style.display = 'none';
+                }
+            }
+
+            document.getElementById('btnToggleAids').onclick = function () {
+                var isHidden = document.body.classList.toggle('hide-visual-aids');
+                localStorage.setItem('visualAidsHidden', isHidden);
+                updateAidsButton(isHidden);
+            };
 
             document.getElementById('bp').onclick = async function () {
                 if (run || !partInsts.length || !ac) return;
@@ -1793,6 +2137,12 @@
                 moveCursorToTime(run ? Math.max(0, ac.currentTime - sat) : (pat || 0));
             };
 
+            document.getElementById('instSelect').onchange = function () {
+                var newProg = this.value;
+                partConfigs.forEach(function (cfg) { cfg.program = newProg; });
+                loadAllInstruments();
+            };
+
             document.getElementById('guidePartSelect').onchange = function () {
                 if (!rawXml || run) return;
                 var current = pat || getRangeStartTime();
@@ -1825,6 +2175,24 @@
                     }
                 }, 250);
             });
+
+            /* ─── Modo Foco ─── */
+            function toggleFocusMode() {
+                var isFocus = document.body.classList.toggle('focus-mode');
+                if (rawXml) {
+                    var currentZoom = +document.getElementById('zoomInp').value || 100;
+                    // No modo foco, aumenta um pouco o zoom se estiver baixo para aproveitar a tela
+                    if (isFocus && currentZoom < 120) osmd.Zoom = 1.25;
+                    else osmd.Zoom = currentZoom / 100;
+                    
+                    setTimeout(function() {
+                        osmd.render();
+                    }, 100);
+                }
+            }
+
+            document.getElementById('btnFocus').onclick = toggleFocusMode;
+            document.getElementById('btnExitFocus').onclick = toggleFocusMode;
 
         })();
     </script>
