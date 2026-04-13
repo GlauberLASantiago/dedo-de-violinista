@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#4a3b2c">
+    <meta name="description" content="Visualizador e reprodutor de partituras musicais">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
     <title>Dedo de violinista</title>
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎻</text></svg>">
@@ -2555,6 +2559,11 @@
 
 
         })();
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js');
+        }
     </script>
 </body>
 
