@@ -132,8 +132,10 @@
         .load-btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            padding: 10px 20px;
+            height: 38px;
+            padding: 0 20px;
             background: #d97706;
             /* Laranja âmbar combinando com o bege */
             color: #fff;
@@ -145,6 +147,7 @@
             transition: background .15s;
             margin-bottom: 6px;
             border: none;
+            box-sizing: border-box;
         }
 
         .load-btn:hover {
@@ -920,7 +923,7 @@
 
         <div class="body">
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <label class="load-btn" title="Carregar partitura" style="padding: 10px 14px; min-width: auto;">
+                <label class="load-btn" title="Carregar partitura" style="padding: 0 14px; min-width: auto;">
                     <svg class="icon-svg" style="width:16px;height:16px;" viewBox="0 0 24 24">
                         <path
                             d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.69.9H18a2 2 0 0 1 2 2v2">
@@ -929,7 +932,7 @@
                     <input type="file" id="fi" accept=".xml,.musicxml,.mxl">
                 </label>
 
-                <button class="load-btn" id="btnExport" style="background:#0284c7; padding: 10px 14px; min-width: auto;" disabled
+                <button class="load-btn" id="btnExport" style="background:#0284c7; padding: 0 14px; min-width: auto;" disabled
                     title="Salvar este app com a partitura atual embutida">
                     <svg class="icon-svg" style="width:16px;height:16px;" viewBox="0 0 24 24">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -939,7 +942,7 @@
                 </button>
 
                 <button class="load-btn btn-hymn" id="btnPrevHymn" title="Hino Anterior"
-                    style="padding: 10px 14px; min-width: auto; margin-right: 2px;">
+                    style="padding: 0 14px; min-width: auto; margin-right: 2px;">
                     <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
                         viewBox="0 0 24 24">
                         <polyline points="15 18 9 12 15 6"></polyline>
@@ -949,7 +952,7 @@
                 <!-- Novo Botão Dropdown para o Hinário -->
                 <div class="hymn-wrap" style="position: relative;">
                     <select id="hymnSelect" class="load-btn btn-hymn"
-                        style="appearance: none; padding-right: 32px; border: none; outline: none; cursor: pointer;">
+                        style="appearance: none; padding: 0 28px 0 12px; width: 100px; border: none; outline: none; cursor: pointer;">
                         <option value="">📖 HNC...</option>
                     </select>
                     <svg class="icon-svg"
@@ -960,7 +963,7 @@
                 </div>
 
                 <button class="load-btn btn-hymn" id="btnNextHymn" title="Próximo Hino"
-                    style="padding: 10px 14px; min-width: auto; margin-left: 2px;">
+                    style="padding: 0 14px; min-width: auto; margin-left: 2px;">
                     <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
                         viewBox="0 0 24 24">
                         <polyline points="9 18 15 12 9 6"></polyline>
@@ -970,7 +973,7 @@
                 <!-- Barra de controles visível apenas no Modo Foco -->
                 <div id="focusModeBar">
                     <button class="load-btn btn-hymn" onclick="document.getElementById('btnPrevHymn').click()"
-                        title="Hino Anterior" style="padding:10px 14px; min-width:auto; margin-right:2px;">
+                        title="Hino Anterior" style="padding:0 14px; min-width:auto; margin-right:2px;">
                         <svg class="icon-svg"
                             style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
                             viewBox="0 0 24 24">
@@ -979,7 +982,7 @@
                     </button>
                     <div class="hymn-wrap" style="position: relative;">
                         <select id="hymnSelectFocus" class="load-btn btn-hymn"
-                            style="appearance: none; padding-right: 32px; border: none; outline: none; cursor: pointer;">
+                            style="appearance: none; padding: 0 28px 0 12px; width: 100px; border: none; outline: none; cursor: pointer;">
                             <option value="">📖 HNC...</option>
                         </select>
                         <svg class="icon-svg"
@@ -989,7 +992,7 @@
                         </svg>
                     </div>
                     <button class="load-btn btn-hymn" onclick="document.getElementById('btnNextHymn').click()"
-                        title="Próximo Hino" style="padding:10px 14px; min-width:auto; margin-left:2px;">
+                        title="Próximo Hino" style="padding:0 14px; min-width:auto; margin-left:2px;">
                         <svg class="icon-svg"
                             style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
                             viewBox="0 0 24 24">
@@ -1953,8 +1956,7 @@
                     restartFromBeginningAndPlay();
                 } else {
                     run = false; pat = 0; stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer(); resetCursorToStart();
-                    var bp = document.getElementById('bp');
-                    if (bp) bp.classList.remove('playing');
+                    updatePlayButtonUI(false);
                 }
             }
             function updatePlayButtonUI(isRunning) {
@@ -1968,6 +1970,7 @@
                 if (bpf) {
                     bpf.innerHTML = isRunning ? stopIcon : playIcon;
                     bpf.title = isRunning ? 'Stop' : 'Play';
+                    if (isRunning) bpf.classList.add('playing'); else bpf.classList.remove('playing');
                 }
             }
 
