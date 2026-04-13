@@ -762,21 +762,21 @@
             background: #57534e;
             color: #fff;
             border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
+            height: 38px;
+            padding: 0 14px;
+            border-radius: 9px;
             cursor: pointer;
             font-size: 13px;
             font-weight: 600;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         }
 
         #btnExitFocus:hover {
             background: #44403c;
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
         }
 
         body.focus-mode #btnExitFocus {
@@ -932,8 +932,8 @@
                     <input type="file" id="fi" accept=".xml,.musicxml,.mxl">
                 </label>
 
-                <button class="load-btn" id="btnExport" style="background:#0284c7; padding: 0 14px; min-width: auto;" disabled
-                    title="Salvar este app com a partitura atual embutida">
+                <button class="load-btn" id="btnExport" style="background:#0284c7; padding: 0 14px; min-width: auto;"
+                    disabled title="Salvar este app com a partitura atual embutida">
                     <svg class="icon-svg" style="width:16px;height:16px;" viewBox="0 0 24 24">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="7 10 12 15 17 10"></polyline>
@@ -1002,20 +1002,20 @@
 
                     <span class="focus-bar-sep"></span>
 
-                    <button class="btn btn-play" id="bpFocus" onclick="document.getElementById('bp').click()" title="Play">
+                    <button class="btn btn-play" id="bpFocus" onclick="document.getElementById('bp').click()"
+                        title="Play">
                         <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
                             <polygon points="5 3 19 12 5 21 5 3"></polygon>
                         </svg>
                     </button>
+                    <button id="btnExitFocus" style="display:none;" title="Sair do Modo Foco">
+                        <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;"
+                            viewBox="0 0 24 24">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
                 </div>
-
-                <button id="btnExitFocus" style="display:none;" title="Sair do Modo Foco">
-                    <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;"
-                        viewBox="0 0 24 24">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
             </div>
 
             <div class="fname" id="fname">Nenhum arquivo selecionado</div>
@@ -1180,26 +1180,30 @@
     <section class="inst-guide">
         <h3>
             <svg class="icon-svg" style="width:18px;height:18px;color:#d97706;" viewBox="0 0 24 24">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
-            Guia para Professores
+            Guia para o Usuário
         </h3>
         <div class="inst-steps">
-            <div class="step"><span class="step-num">1</span><b>Exportar XML</b>No MuseScore (ou similar), exporte sua
-                partitura em formato MusicXML (.musicxml ou .xml).</div>
-            <div class="step"><span class="step-num">2</span><b>Carregar & Ajustar</b>Use o botão azul acima para
-                carregar o arquivo. Ajuste Andamento (BPM), Reverberação e Zoom conforme desejado.
-            </div>
-            <div class="step"><span class="step-num">3</span><b>Trecho</b>Defina o compasso inicial e final em
-                <b>Trecho</b> para executar apenas uma parte da música.
-            </div>
+            <div class="step"><span class="step-num">1</span><b>Carregar Partituras</b>Selecione um arquivo de partitura
+                (.mxl, .musicxml) do seu dispositivo no botão de pasta, ou utilize o menu HNC para carregar hinos no
+                hinário Novo Cântico
+                diretamente da nossa biblioteca pública.</div>
+            <div class="step"><span class="step-num">2</span><b>Controles de Estudo</b>Ajuste o andamento (BPM), ligue o
+                metrônomo (inclusive com contagem inicial), e defina o início e fim da reprodução em <b>Trecho</b> para
+                concentrar-se nas partes difíceis.</div>
+            <div class="step"><span class="step-num">3</span><b>Auxílios Visuais</b>Acompanhe a música na partitura, com
+                foco por nota ou compasso na barra de reprodução, enquanto o braço do violino indica a posição exata da
+                corda e o dedo a se usar (baseado na 1ª posição). O quadro lateral monstra a nota correspondente.</div>
+            <div class="step"><span class="step-num">4</span><b>Modos de Exibição</b>Você pode esconder os guias do
+                violino com o botão Auxílios, ou maximizar a concentração acionando o Modo Foco, restando
+                visível na tela apenas a partitura e os controles essenciais.</div>
         </div>
         <div class="inst-obs"
             style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);font-size:13.5px;line-height:1.6;color:var(--text-sub);">
-            <p><b>⚠️ Nota:</b> O Dedo de violinista é uma ferramenta focada em operações básicas e acessibilidade. Todos
-                os canais e vozes estão pré-configurados automaticamente para soar como <b>Violino</b>. O diagrama do
-                braço exibe as digitações na <b>1ª posição</b> para ajudar na visualização inicial.</p>
+            <p><b>⚠️ Dica:</b> O botão "Exportar" permite que você baixe a página atual contendo a partitura carregada
+                numa versão "offline" na forma de um único arquivo pronto para treinar quando quiser ou enviar para um
+                colega ou estudante.</p>
         </div>
     </section>
 
@@ -1440,10 +1444,10 @@
                 for (var i = 0; i < measureTimeArray.length; i++) {
                     if (!measureTimeArray[i]) continue;
                     var t = measureTimeArray[i].t;
-                    if (t <= currentSec + 0.01 && t > bestT) { 
-                        bestT = t; 
-                        bestIdx = measureTimeArray[i].index; 
-                        bestM = measureTimeArray[i].m; 
+                    if (t <= currentSec + 0.01 && t > bestT) {
+                        bestT = t;
+                        bestIdx = measureTimeArray[i].index;
+                        bestM = measureTimeArray[i].m;
                     }
                 }
                 if (bestIdx === -1) return { notes: [], note: null };
@@ -1520,7 +1524,7 @@
                                 measureTimeMap[measureNumber] = real * 4 * beatLen;
                             }
                             measureTimeArray.push({ index: mIdx, m: measureNumber, t: real * 4 * beatLen });
-                            
+
                             if (lastM === -1) minMeasureNumber = measureNumber;
                             maxMeasureNumber = measureNumber;
                             lastM = mIdx;
@@ -1528,7 +1532,7 @@
                         it.moveToNext();
                     }
                     osmd.cursor.reset();
-                    
+
                     // Define a âncora do metrônomo (o início do primeiro compasso "cheio")
                     // Se o primeiro compasso for uma anacruse, o segundo compasso (index 1) será a nossa âncora de batida.
                     if (measureTimeArray.length > 1) {
@@ -2460,7 +2464,7 @@
                 var isFocus = document.body.classList.toggle('focus-mode');
                 if (rawXml) {
                     var currentZoom = +document.getElementById('zoomInp').value || 100;
-                    
+
                     if (isFocus) {
                         if (window.innerWidth < 768) {
                             osmd.Zoom = 0.5; // Força 50% no foco mobile
