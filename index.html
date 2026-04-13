@@ -145,7 +145,6 @@
             cursor: pointer;
             font-family: inherit;
             transition: background .15s;
-            margin-bottom: 6px;
             border: none;
             box-sizing: border-box;
         }
@@ -498,8 +497,8 @@
         .finger-dot {
             position: absolute;
             top: 50%;
-            width: 26px;
-            height: 26px;
+            width: 39px;
+            height: 39px;
             background: radial-gradient(circle at 30% 30%, #fef08a, #eab308 60%, #a16207);
             border: 1px solid #713f12;
             color: #281500;
@@ -509,7 +508,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 15px;
+            font-size: 22px;
             z-index: 3;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.4);
             text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
@@ -535,6 +534,7 @@
         /* Correção do deslocamento do cursor (nota e compasso) */
         #score [id^="cursorImg"] {
             transform: translate(-5px, -5px) !important;
+            opacity: 0.3 !important;
         }
 
         .credits-footer {
@@ -682,13 +682,11 @@
             text-shadow: 0 0 15px rgba(217, 119, 6, 0.3);
         }
 
-        /* ─── Modo Ocultar Auxílios ─── */
-        .hide-visual-aids .finger-dot,
-        .hide-visual-aids .fb-tape,
-        .hide-visual-aids .str-labels,
-        .hide-visual-aids .note-display {
+        /* ─── Modo Ocultar Digitação (Braço) ─── */
+        .hide-visual-aids .fb-layout-wrap {
             display: none !important;
         }
+
 
         /* Ajuste do layout quando o mostrador lateral some */
         .hide-visual-aids .fb-layout-wrap {
@@ -696,15 +694,24 @@
         }
 
         #btnToggleAids,
+        #btnSolo,
         #btnFocus {
             background-color: #57534e;
             color: #fff;
         }
 
         #btnToggleAids:hover,
+        #btnSolo:hover,
         #btnFocus:hover {
             background-color: #44403c;
         }
+
+        #btnSolo.active {
+            background-color: #f59e0b !important;
+            color: #fff !important;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
 
         /* ─── Modo Foco (Apenas Partitura) ─── */
         body.focus-mode {
@@ -732,7 +739,7 @@
             margin: 0 !important;
         }
 
-        body.focus-mode .body>div:first-child>*:not(#btnExitFocus):not(#focusModeBar) {
+        body.focus-mode .body>div:first-child>*:not(#focusModeBar) {
             display: none !important;
         }
 
@@ -741,11 +748,34 @@
             display: none;
             align-items: center;
             gap: 6px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            width: 100%;
+            justify-content: space-between;
         }
 
         body.focus-mode #focusModeBar {
             display: flex !important;
+        }
+
+        #focusModeBar .focus-group-left,
+        #focusModeBar .focus-group-center,
+        #focusModeBar .focus-group-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #focusModeBar .focus-group-left,
+        #focusModeBar .focus-group-right {
+            flex: 1;
+        }
+
+        #focusModeBar .focus-group-center {
+            justify-content: center;
+        }
+
+        #focusModeBar .focus-group-right {
+            justify-content: flex-end;
         }
 
         .focus-bar-sep {
@@ -852,6 +882,10 @@
                 width: calc(100% + 24px);
             }
 
+            .fb-layout-wrap .note-display {
+                margin-left: 5px;
+            }
+
             #score {
                 width: calc(100% + 24px);
                 margin: 15px -12px 0 -12px;
@@ -865,7 +899,7 @@
             /* Ajuste extra para os controles do Modo Foco: pequena e em linha única */
             #focusModeBar {
                 flex-wrap: nowrap !important;
-                justify-content: flex-start;
+                justify-content: space-between;
                 gap: 5px;
                 padding: 4px;
                 overflow-x: auto;
@@ -922,56 +956,10 @@
         </div>
 
         <div class="body">
+            <!-- Barra de controles visível apenas no Modo Foco -->
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <label class="load-btn" title="Carregar partitura" style="padding: 0 14px; min-width: auto;">
-                    <svg class="icon-svg" style="width:16px;height:16px;" viewBox="0 0 24 24">
-                        <path
-                            d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.69.9H18a2 2 0 0 1 2 2v2">
-                        </path>
-                    </svg>
-                    <input type="file" id="fi" accept=".xml,.musicxml,.mxl">
-                </label>
-
-                <button class="load-btn" id="btnExport" style="background:#0284c7; padding: 0 14px; min-width: auto;"
-                    disabled title="Salvar este app com a partitura atual embutida">
-                    <svg class="icon-svg" style="width:16px;height:16px;" viewBox="0 0 24 24">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                </button>
-
-                <button class="load-btn btn-hymn" id="btnPrevHymn" title="Hino Anterior"
-                    style="padding: 0 14px; min-width: auto; margin-right: 2px;">
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
-                        viewBox="0 0 24 24">
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>
-                </button>
-
-                <!-- Novo Botão Dropdown para o Hinário -->
-                <div class="hymn-wrap" style="position: relative;">
-                    <select id="hymnSelect" class="load-btn btn-hymn"
-                        style="appearance: none; padding: 0 28px 0 12px; width: 100px; border: none; outline: none; cursor: pointer;">
-                        <option value="">📖 HNC...</option>
-                    </select>
-                    <svg class="icon-svg"
-                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 14px; height: 14px; color: #fff;"
-                        viewBox="0 0 24 24">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                </div>
-
-                <button class="load-btn btn-hymn" id="btnNextHymn" title="Próximo Hino"
-                    style="padding: 0 14px; min-width: auto; margin-left: 2px;">
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
-                        viewBox="0 0 24 24">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                </button>
-
-                <!-- Barra de controles visível apenas no Modo Foco -->
                 <div id="focusModeBar">
+                    <div class="focus-group-left">
                     <button class="load-btn btn-hymn" onclick="document.getElementById('btnPrevHymn').click()"
                         title="Hino Anterior" style="padding:0 14px; min-width:auto; margin-right:2px;">
                         <svg class="icon-svg"
@@ -1000,14 +988,18 @@
                         </svg>
                     </button>
 
-                    <span class="focus-bar-sep"></span>
+                    </div>
 
+                    <div class="focus-group-center">
                     <button class="btn btn-play" id="bpFocus" onclick="document.getElementById('bp').click()"
-                        title="Play">
+                        title="Tocar">
                         <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
                             <polygon points="5 3 19 12 5 21 5 3"></polygon>
                         </svg>
                     </button>
+                    </div>
+
+                    <div class="focus-group-right">
                     <button id="btnExitFocus" style="display:none;" title="Sair do Modo Foco">
                         <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;"
                             viewBox="0 0 24 24">
@@ -1015,19 +1007,71 @@
                             <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
                     </button>
+                    </div>
                 </div>
             </div>
 
             <div class="fname" id="fname">Nenhum arquivo selecionado</div>
 
             <div class="controls">
+                <!-- Carregar partitura -->
+                <label class="load-btn" title="Carregar partitura" style="padding: 0 14px; min-width: auto;">
+                    <svg class="icon-svg" style="width:16px;height:16px;" viewBox="0 0 24 24">
+                        <path
+                            d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.69.9H18a2 2 0 0 1 2 2v2">
+                        </path>
+                    </svg>
+                    <input type="file" id="fi" accept=".xml,.musicxml,.mxl">
+                </label>
+
+                <!-- Salvar com HTML -->
+                <button class="load-btn" id="btnExport" style="background:#0284c7; padding: 0 14px; min-width: auto;"
+                    disabled title="Salvar este app com a partitura atual embutida">
+                    <svg class="icon-svg" style="width:16px;height:16px;" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </button>
+
+                <!-- Seletores do HNC -->
+                <button class="load-btn btn-hymn" id="btnPrevHymn" title="Hino Anterior"
+                    style="padding: 0 14px; min-width: auto; margin-right: 2px;">
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
+                        viewBox="0 0 24 24">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+
+                <div class="hymn-wrap" style="position: relative;">
+                    <select id="hymnSelect" class="load-btn btn-hymn"
+                        style="appearance: none; padding: 0 28px 0 12px; width: 100px; border: none; outline: none; cursor: pointer;">
+                        <option value="">📖 HNC...</option>
+                    </select>
+                    <svg class="icon-svg"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 14px; height: 14px; color: #fff;"
+                        viewBox="0 0 24 24">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+
+                <button class="load-btn btn-hymn" id="btnNextHymn" title="Próximo Hino"
+                    style="padding: 0 14px; min-width: auto; margin-left: 2px;">
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
+                        viewBox="0 0 24 24">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+
+                <!-- Tocar/Parar -->
                 <button class="btn btn-play" id="bp" disabled>
                     <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
                         <polygon points="5 3 19 12 5 21 5 3"></polygon>
                     </svg>
-                    Play
+                    Tocar
                 </button>
 
+                <!-- BPM -->
                 <div class="range-wrap">
                     <label for="bpm">BPM</label>
                     <input type="number" id="bpm" value="100" min="20" max="400" step="1">
@@ -1037,11 +1081,7 @@
                     </label>
                 </div>
 
-                <div class="met-wrap">
-                    <label for="metCheck">Metrônomo</label>
-                    <input type="checkbox" id="metCheck" checked>
-                </div>
-
+                <!-- Contagem -->
                 <div class="met-wrap">
                     <label for="countInSelect" title="Compassos de metrônomo antes de começar">Contagem</label>
                     <select id="countInSelect">
@@ -1052,38 +1092,13 @@
                     </select>
                 </div>
 
+                <!-- Metrônomo -->
                 <div class="met-wrap">
-                    <label for="loopCheck">Loop</label>
-                    <input type="checkbox" id="loopCheck" checked>
+                    <label for="metCheck">Metrônomo</label>
+                    <input type="checkbox" id="metCheck" checked>
                 </div>
 
-                <div class="rev-wrap">
-                    <label for="reverbAmt">Reverber</label>
-                    <input type="number" id="reverbAmt" value="15" min="0" max="100">
-                </div>
-
-                <div class="zoom-wrap">
-                    <label for="zoomInp">Zoom %</label>
-                    <input type="number" id="zoomInp" value="100" min="40" max="300" step="5">
-                </div>
-
-                <div class="cursor-wrap">
-                    <label for="cursorMode">Cursor</label>
-                    <select id="cursorMode" title="Modo de destaque do cursor (Nota ou Compasso)">
-                        <option value="0">Nota</option>
-                        <option value="3" selected>Compasso</option>
-                        <option value="-1">Sem cursor</option>
-                    </select>
-                </div>
-
-                <div class="cursor-wrap">
-                    <label for="instSelect">Som</label>
-                    <select id="instSelect" title="Escolher o som dos instrumentos">
-                        <option value="violin" selected>Violino</option>
-                        <option value="acoustic_grand_piano">Piano</option>
-                    </select>
-                </div>
-
+                <!-- Trecho -->
                 <div class="range-wrap" title="Definir trecho para execução">
                     <label>Trecho</label>
                     <input type="number" id="rangeFrom" class="range-num" value="1" min="1" title="Compasso inicial"
@@ -1093,8 +1108,30 @@
                         disabled>
                 </div>
 
-                <button class="btn" id="btnToggleAids"
-                    title="Ocultar/Mostrar indicações visuais (Dedilhados, Guias e Nomes)">
+                <!-- Loop -->
+                <div class="met-wrap">
+                    <label for="loopCheck">Loop</label>
+                    <input type="checkbox" id="loopCheck" checked>
+                </div>
+
+                <!-- Cursor -->
+                <div class="cursor-wrap">
+                    <label for="cursorMode">Cursor</label>
+                    <select id="cursorMode" title="Modo de destaque do cursor (Nota ou Compasso)">
+                        <option value="0">Nota</option>
+                        <option value="3" selected>Compasso</option>
+                        <option value="-1">Sem cursor</option>
+                    </select>
+                </div>
+
+                <!-- Zoom -->
+                <div class="zoom-wrap">
+                    <label for="zoomInp">Zoom %</label>
+                    <input type="number" id="zoomInp" value="100" min="40" max="300" step="5">
+                </div>
+
+                <!-- Digitação -->
+                <button class="btn" id="btnToggleAids" title="Ocultar/Mostrar todo o visual do braço do violino">
                     <svg id="aidsIconShow" class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
@@ -1106,9 +1143,10 @@
                         </path>
                         <line x1="1" y1="1" x2="23" y2="23"></line>
                     </svg>
-                    <span>Auxílios</span>
+                    <span>Digitação</span>
                 </button>
 
+                <!-- Foco -->
                 <button class="btn" id="btnFocus" title="Modo Foco: Mostrar apenas a partitura">
                     <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;"
                         viewBox="0 0 24 24">
@@ -1117,11 +1155,32 @@
                     <span>Foco</span>
                 </button>
 
+                <!-- Reverber -->
+                <div class="rev-wrap">
+                    <label for="reverbAmt">Reverber</label>
+                    <input type="number" id="reverbAmt" value="15" min="0" max="100">
+                </div>
+
+                <!-- Som -->
+                <div class="cursor-wrap">
+                    <label for="instSelect">Som</label>
+                    <select id="instSelect" title="Escolher o som dos instrumentos">
+                        <option value="violin" selected>Violino</option>
+                        <option value="acoustic_grand_piano">Piano</option>
+                    </select>
+                </div>
+
+                <!-- Guia -->
                 <div class="cursor-wrap" id="guidePartWrap" style="display:none;"
                     title="Escolher qual instrumento será exibido no braço do violino">
                     <label for="guidePartSelect">Guia</label>
                     <select id="guidePartSelect"></select>
                 </div>
+
+                <!-- Solo -->
+                <button class="btn" id="btnSolo" title="Solo: Ouvir apenas o instrumento da Guia" style="display:none;">
+                    <span>SOLO</span>
+                </button>
 
                 <div id="partsPanel" class="parts-panel" style="display:none;"></div>
             </div>
@@ -1184,26 +1243,19 @@
             </svg>
             Guia para o Usuário
         </h3>
-        <div class="inst-steps">
-            <div class="step"><span class="step-num">1</span><b>Carregar Partituras</b>Selecione um arquivo de partitura
-                (.mxl, .musicxml) do seu dispositivo no botão de pasta, ou utilize o menu HNC para carregar hinos no
-                hinário Novo Cântico
-                diretamente da nossa biblioteca pública.</div>
-            <div class="step"><span class="step-num">2</span><b>Controles de Estudo</b>Ajuste o andamento (BPM), ligue o
-                metrônomo (inclusive com contagem inicial), e defina o início e fim da reprodução em <b>Trecho</b> para
-                concentrar-se nas partes difíceis.</div>
-            <div class="step"><span class="step-num">3</span><b>Auxílios Visuais</b>Acompanhe a música na partitura, com
-                foco por nota ou compasso na barra de reprodução, enquanto o braço do violino indica a posição exata da
-                corda e o dedo a se usar (baseado na 1ª posição). O quadro lateral monstra a nota correspondente.</div>
-            <div class="step"><span class="step-num">4</span><b>Modos de Exibição</b>Você pode esconder os guias do
-                violino com o botão Auxílios, ou maximizar a concentração acionando o Modo Foco, restando
-                visível na tela apenas a partitura e os controles essenciais.</div>
-        </div>
-        <div class="inst-obs"
-            style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);font-size:13.5px;line-height:1.6;color:var(--text-sub);">
-            <p><b>⚠️ Dica:</b> O botão "Exportar" permite que você baixe a página atual contendo a partitura carregada
-                numa versão "offline" na forma de um único arquivo pronto para treinar quando quiser ou enviar para um
-                colega ou estudante.</p>
+        <div style="font-size:13px; color:var(--text-sub); line-height:1.7;">
+            <p>Violinista, assim que o app é aberto, ele já está programado para:
+                tocar em um andamento (BPM) mais lento;
+                iniciar com uma contagem de 2 compassos (para dar tempo de você pegar o seu instrumento);
+                estar com o metrônomo ligado;
+                tocar em loop (para você poder praticar várias vezes sem ter que soltar o instrumento);
+                utilizar som de violino (e não o de piano);
+                exibir a "guia visual" da digitação selecionada para o primeiro pentagrama do sistema; e
+                reproduzir todos os instrumentos (e não em solo).</p>
+            <p style="margin-top:12px;">Depois, você pode alterar todas essas configurações.</p>
+            <p style="margin-top:12px;">Para visualizar melhor a partitura, clique no botão <b>"Foco"</b>.</p>
+            <p style="margin-top:12px;"><b>Para abrir uma nova música:</b>
+                Selecione um arquivo de partitura (.mxl, .musicxml) do seu dispositivo no botão de pasta ou utilize o menu HNC para carregar hinos do hinário Novo Cântico diretamente da nossa biblioteca pública.</p>
         </div>
     </section>
 
@@ -1252,6 +1304,8 @@
             var xmlNoteMap = {}; // Mapa manual de notas extraídas do MusicXML (indexado por partIndex)
             var originalXmlBpm = null;
             var currentHymnIndex = 0;
+            var soloActive = false;
+
 
             /* ─── Fingerboard Logic ─── */
             function getViolinFingering(noteObj) {
@@ -1582,6 +1636,7 @@
                     rangeTo = rangeFrom;
                     document.getElementById('rangeTo').value = rangeTo;
                 }
+                if (run) stopPlayback();
             });
             document.getElementById('rangeTo').addEventListener('change', function () {
                 var v = parseInt(this.value, 10) || maxMeasureNumber;
@@ -1593,6 +1648,7 @@
                     rangeFrom = rangeTo;
                     document.getElementById('rangeFrom').value = rangeFrom;
                 }
+                if (run) stopPlayback();
             });
 
             /* Variáveis do Scheduler */
@@ -1753,6 +1809,9 @@
                 });
 
                 if (guideWrap) guideWrap.style.display = (parts.length > 1) ? 'flex' : 'none';
+                var sBtn = document.getElementById('btnSolo');
+                if (sBtn) sBtn.style.display = (parts.length > 1) ? 'inline-flex' : 'none';
+
 
                 buildMeasureTimeMap();
                 updateRangeInputs();
@@ -1804,11 +1863,14 @@
             }
 
             function updatePartMix() {
+                var guideIdx = parseInt(document.getElementById('guidePartSelect').value) || 0;
                 partConfigs.forEach(function (cfg, idx) {
                     var finalGain = (cfg.vol || 100) / 100;
+                    if (soloActive && idx !== guideIdx) finalGain = 0;
                     if (partGains[idx]) partGains[idx].gain.setTargetAtTime(finalGain, ac.currentTime, 0.05);
                 });
             }
+
 
             function stopScheduled() {
                 sc.forEach(function (n) { try { n.stop(); } catch (_) { } });
@@ -1968,12 +2030,12 @@
                 var playIcon = '<svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
                 var stopIcon = '<svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"></rect></svg>';
                 if (bp) {
-                    bp.innerHTML = isRunning ? stopIcon + ' Stop' : playIcon + ' Play';
+                    bp.innerHTML = isRunning ? stopIcon + ' Parar' : playIcon + ' Tocar';
                     if (isRunning) bp.classList.add('playing'); else bp.classList.remove('playing');
                 }
                 if (bpf) {
                     bpf.innerHTML = isRunning ? stopIcon : playIcon;
-                    bpf.title = isRunning ? 'Stop' : 'Play';
+                    bpf.title = isRunning ? 'Parar' : 'Tocar';
                     if (isRunning) bpf.classList.add('playing'); else bpf.classList.remove('playing');
                 }
             }
@@ -2410,12 +2472,8 @@
 
             document.getElementById('bpm').onchange = function () {
                 if (!rawXml) return;
+                if (run) stopPlayback();
                 buildMeasureTimeMap();
-                if (run && ac) {
-                    var currentOffset = Math.max(0, ac.currentTime - sat);
-                    stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer();
-                    scheduleFrom(currentOffset).then(function () { startCursorFollow(currentOffset); });
-                } else moveCursorToTime(pat || 0);
             };
 
             document.getElementById('bpmRedCheck').onchange = function () {
@@ -2437,13 +2495,16 @@
             };
 
             document.getElementById('instSelect').onchange = function () {
+                if (run) stopPlayback();
                 var newProg = this.value;
                 partConfigs.forEach(function (cfg) { cfg.program = newProg; });
                 loadAllInstruments();
             };
 
             document.getElementById('guidePartSelect').onchange = function () {
+                updatePartMix();
                 if (!rawXml || run) return;
+
                 var current = pat || getRangeStartTime();
                 var activeNotes = [];
                 var guidePart = parseInt(this.value);
@@ -2485,6 +2546,13 @@
 
             document.getElementById('btnFocus').onclick = toggleFocusMode;
             document.getElementById('btnExitFocus').onclick = toggleFocusMode;
+
+            document.getElementById('btnSolo').onclick = function () {
+                soloActive = !soloActive;
+                this.classList.toggle('active', soloActive);
+                updatePartMix();
+            };
+
 
         })();
     </script>
