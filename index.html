@@ -208,26 +208,12 @@
         }
 
         .btn-play.playing {
-            background: #15803d !important;
+            background: #ef4444 !important;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-pause {
-            background: #f59e0b;
-            color: #fff;
-        }
-
-        .btn-pause:not(:disabled):hover {
-            background: #d97706;
-        }
-
-        .btn-stop {
-            background: #ef4444;
-            color: #fff;
-        }
-
-        .btn-stop:not(:disabled):hover {
-            background: #dc2626;
+        .btn-play.playing:hover {
+            background: #dc2626 !important;
         }
 
         .bpm-wrap,
@@ -934,24 +920,22 @@
 
         <div class="body">
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <label class="load-btn">
-                    <svg class="icon-svg" style="width:16px;height:16px;margin-right:6px;" viewBox="0 0 24 24">
+                <label class="load-btn" title="Carregar partitura" style="padding: 10px 14px; min-width: auto;">
+                    <svg class="icon-svg" style="width:16px;height:16px;" viewBox="0 0 24 24">
                         <path
                             d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.69.9H18a2 2 0 0 1 2 2v2">
                         </path>
                     </svg>
-                    <span>Carregar partitura</span>
                     <input type="file" id="fi" accept=".xml,.musicxml,.mxl">
                 </label>
 
-                <button class="load-btn" id="btnExport" style="background:#0284c7;" disabled
+                <button class="load-btn" id="btnExport" style="background:#0284c7; padding: 10px 14px; min-width: auto;" disabled
                     title="Salvar este app com a partitura atual embutida">
-                    <svg class="icon-svg" style="width:16px;height:16px;margin-right:6px;" viewBox="0 0 24 24">
+                    <svg class="icon-svg" style="width:16px;height:16px;" viewBox="0 0 24 24">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="7 10 12 15 17 10"></polyline>
                         <line x1="12" y1="15" x2="12" y2="3"></line>
                     </svg>
-                    <span>Salvar como HTML</span>
                 </button>
 
                 <button class="load-btn btn-hymn" id="btnPrevHymn" title="Hino Anterior"
@@ -1015,20 +999,9 @@
 
                     <span class="focus-bar-sep"></span>
 
-                    <button class="btn btn-play" onclick="document.getElementById('bp').click()" title="Play">
+                    <button class="btn btn-play" id="bpFocus" onclick="document.getElementById('bp').click()" title="Play">
                         <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
                             <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                    </button>
-                    <button class="btn btn-pause" onclick="document.getElementById('bpa').click()" title="Pause">
-                        <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
-                            <rect x="6" y="4" width="4" height="16"></rect>
-                            <rect x="14" y="4" width="4" height="16"></rect>
-                        </svg>
-                    </button>
-                    <button class="btn btn-stop" onclick="document.getElementById('bs').click()" title="Stop">
-                        <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
-                            <rect x="4" y="4" width="16" height="16"></rect>
                         </svg>
                     </button>
                 </div>
@@ -1050,19 +1023,6 @@
                         <polygon points="5 3 19 12 5 21 5 3"></polygon>
                     </svg>
                     Play
-                </button>
-                <button class="btn btn-pause" id="bpa" disabled>
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
-                        <rect x="6" y="4" width="4" height="16"></rect>
-                        <rect x="14" y="4" width="4" height="16"></rect>
-                    </svg>
-                    Pause
-                </button>
-                <button class="btn btn-stop" id="bs" disabled>
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
-                        <rect x="4" y="4" width="16" height="16"></rect>
-                    </svg>
-                    Stop
                 </button>
 
                 <div class="range-wrap">
@@ -1997,24 +1957,29 @@
                     if (bp) bp.classList.remove('playing');
                 }
             }
-            function pausePlayback() {
-                if (!run || !ac) return;
-                run = false; pat = Math.max(0, ac.currentTime - sat);
-                stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer();
-                updateFingerboard([]);
-                var bp = document.getElementById('bp');
-                if (bp) bp.classList.remove('playing');
+            function updatePlayButtonUI(isRunning) {
+                var bp = document.getElementById('bp'), bpf = document.getElementById('bpFocus');
+                var playIcon = '<svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+                var stopIcon = '<svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"></rect></svg>';
+                if (bp) {
+                    bp.innerHTML = isRunning ? stopIcon + ' Stop' : playIcon + ' Play';
+                    if (isRunning) bp.classList.add('playing'); else bp.classList.remove('playing');
+                }
+                if (bpf) {
+                    bpf.innerHTML = isRunning ? stopIcon : playIcon;
+                    bpf.title = isRunning ? 'Stop' : 'Play';
+                }
             }
+
             function stopPlayback() {
                 run = false; pat = 0; stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer(); resetCursorToStart();
-                var bp = document.getElementById('bp');
-                if (bp) bp.classList.remove('playing');
+                updatePlayButtonUI(false);
             }
             async function restartFromBeginningAndPlay() {
                 stopPlayback(false);
                 if (!partInsts.length || !ac) return;
                 var startT = getRangeStartTime();
-                run = true; await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
+                run = true; updatePlayButtonUI(true); await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
             }
             function armPlaybackEnd(offset, startDelay) {
                 clearPlaybackEndTimer();
@@ -2224,7 +2189,7 @@
                 updateRangeInputs();
                 sat = 0; pat = 0; run = false; evs = []; sc = []; pieceEnd = 0;
                 clearPlaybackEndTimer();
-                ['bp', 'bpa', 'bs', 'reverbAmt', 'rangeFrom', 'rangeTo', 'countInSelect', 'loopCheck', 'btnExport'].forEach(function (id) {
+                ['bp', 'reverbAmt', 'rangeFrom', 'rangeTo', 'countInSelect', 'loopCheck', 'btnExport'].forEach(function (id) {
                     var el = document.getElementById(id);
                     if (el) el.disabled = false;
                 });
@@ -2418,15 +2383,17 @@
             };
 
             document.getElementById('bp').onclick = async function () {
-                if (run || !partInsts.length || !ac) return;
-                run = true;
-                this.classList.add('playing');
-                var startT = getRangeStartTime();
-                await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
+                if (!partInsts.length || !ac) return;
+                if (run) {
+                    stopPlayback();
+                } else {
+                    run = true;
+                    updatePlayButtonUI(true);
+                    var startT = getRangeStartTime();
+                    await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
+                }
             };
 
-            document.getElementById('bpa').onclick = function () { pausePlayback(); };
-            document.getElementById('bs').onclick = function () { stopPlayback(true); };
             document.getElementById('reverbAmt').oninput = function () { updateReverb(); };
 
             document.getElementById('zoomInp').onchange = function () {
