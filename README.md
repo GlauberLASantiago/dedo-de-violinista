@@ -1,47 +1,63 @@
 # 🎻 Dedo de Violinista
 
-**Dedo de Violinista** é um visualizador interativo de partituras MusicXML projetado especificamente para auxiliar estudantes e professores de violino. Ele combina a renderização precisa de partituras com um guia visual de dedilhado em tempo real e um sistema de metrônomo profissional.
+Visualizador interativo de partituras com guia de dedilhado para violino. Funciona 100% no navegador — sem instalação necessária.
 
-<img width="1469" height="764" alt="image" src="https://github.com/user-attachments/assets/1c41dab8-51a0-4507-a197-6cd0430bdf4a" />
+🔗 **Acesse agora:** [glauberlasantiago.github.io/dedo-de-violinista](https://glauberlasantiago.github.io/dedo-de-violinista/)
+
+<img width="913" height="836" alt="image" src="https://github.com/user-attachments/assets/30785877-b68a-4c11-bfbd-615342e18108" />
 
 
-## ✨ Principais Funcionalidades
+## Funcionalidades
 
-- **Visualização Interativa**: Renderização de alta qualidade usando [OpenSheetMusicDisplay](https://github.com/opensheetmusicdisplay/opensheetmusicdisplay).
-- **Guia de Dedilhado**: Um braço de violino virtual que mostra as posições dos dedos (1ª posição) em tempo real conforme a música toca.
-- **Metrônomo Profissional**:
-  - Som de alta fidelidade (*Side Stick/Rimshot*) via WebAudioFont.
-  - **Contagem Configurável**: Escolha entre 1, 2 ou 4 compassos de preparação.
-  - **Detecção de Anacruza**: Ajusta automaticamente a contagem para entradas em tempos incompletos.
-  - **Pausa de Preparação**: 1 segundo de silêncio antes do início da contagem.
-- **Trechos e Loops**:
-  - Seleção de intervalo de compassos para estudo focado.
-  - Modo **Loop** automático para repetição contínua de trechos.
-- **Suporte Multi-Instrumento**: Escolha qual "voz" da partitura deve guiar o dedilhado no braço do violino.
-- **Mapeamento Customizado**: Ajustes finos de digitação (ex: uso do dedo 4 para intervalos de tritura em todas as cordas).
-- **Temas**: Suporte a temas claro (Bege Clássico) e escuro.
+- 📄 **Carregamento de partituras** — suporta arquivos `.xml`, `.musicxml` e `.mxl`
+- 📖 **Hinário Novo Cântico (HNC)** — navegue e carregue hinos diretamente pelo seletor
+- 🎵 **Reprodução de áudio** — toca a partitura com som de violino ou piano, usando WebAudio
+- 🎹 **Braço do violino virtual** — exibe em tempo real o dedilhado nas cordas (Mi, Lá, Ré, Sol)
+- ⏱ **Controle de BPM** — ajuste a velocidade e opção de redução automática (-30 BPM)
+- 🔁 **Loop e trecho** — defina compasso inicial/final e repita quantas vezes quiser
+- 🎤 **Metrônomo e contagem** — 1, 2 ou 4 compassos de introdução antes da execução
+- 🔊 **Reverb** — controle de reverberação para o som
+- 🎯 **Modo Foco** — esconde tudo e exibe apenas a partitura em tela cheia
+- 🔍 **Zoom** — ajuste de 40% a 300%
+- 🌙 **Tema claro/escuro** — alternância com um clique
+- 🎛 **Solo e Guia de instrumento** — para partituras com múltiplas partes
+- 💾 **Exportar** — salva o app com a partitura embutida em um único HTML
+- 📱 **Responsivo** — funciona em celular e desktop
+- 📲 **PWA** — instale como app no celular ou desktop para uso offline
 
-## 🚀 Como Usar
+## Como usar
 
-1. **Carregar Partitura**: Utilize o botão "Carregar partitura" para importar arquivos `.xml`, `.musicxml` ou `.mxl`.
-2. **Configurar**: Ajuste o BPM (andamento), a reverberação e o nível de zoom.
-3. **Selecionar Trecho**: Define os compassos inicial e final se desejar estudar apenas uma parte.
-4. **Guia de Dedilhado**: Se houver mais de um instrumento na partitura, use o seletor "Guia" para escolher qual voz será exibida no braço do violino.
-5. **Praticar**: Ative o Metrônomo e o Loop conforme necessário e clique em **Play**.
+1. Acesse o site pelo link acima
+2. Clique em 📂 para carregar uma partitura `.xml`/`.mxl` **ou** selecione um hino pelo seletor **📖 HNC**
+3. Ajuste BPM, trecho, metrônomo e pressione **▶ Tocar**
+4. Acompanhe o dedilhado no braço do violino virtual
 
-## 🛠️ Tecnologias Utilizadas
+## Instalar como app (PWA)
 
-- **HTML5 / CSS3** (Vanilla para máxima performance)
-- **JavaScript** (ES6+)
-- **OpenSheetMusicDisplay (OSMD)**: Renderização de MusicXML.
-- **WebAudioFont**: Motor de áudio baseado em samples para o metrônomo.
-- **Soundfont-player**: Reprodução do som de violino para as notas da partitura.
-- **JSZip**: Para suporte a arquivos MusicXML compactados (.mxl).
+No navegador (Chrome, Edge, Safari):
+1. Acesse o site
+2. Clique no ícone de **instalar** (⊕) na barra de endereço
+3. O app funciona offline após a primeira visita
 
-## 📄 Licença
+## Tecnologias
 
-Desenvolvido pelo professor **Glauber Santiago** — DAC/UFSCar.
-Este projeto está disponível para fins educacionais.
+- [OpenSheetMusicDisplay](https://opensheetmusicdisplay.github.io/) — renderização de partituras MusicXML
+- [soundfont-player](https://github.com/danigb/soundfont-player) — reprodução de áudio via SoundFont
+- [WebAudioFont](https://surikov.github.io/webaudiofont/) — fontes de áudio para WebAudio
+- [JSZip](https://stuk.github.io/jszip/) — descompactação de arquivos `.mxl`
+- HTML, CSS e JavaScript puro — sem frameworks
 
----
-[servidores.ufscar.br/glauber/](https://servidores.ufscar.br/glauber/) | [sites.google.com/view/glauberia](https://sites.google.com/view/glauberia)
+## Estrutura
+
+```
+index.html       → Aplicação completa (single-file)
+manifest.json    → Manifesto PWA
+sw.js            → Service Worker para cache offline
+icons/
+  icon-192.png   → Ícone 192x192
+  icon-512.png   → Ícone 512x512
+```
+
+## Licença
+
+Este projeto é de uso livre para fins educacionais e pessoais.
