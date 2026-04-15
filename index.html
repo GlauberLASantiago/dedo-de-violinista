@@ -930,6 +930,117 @@
                 display: none;
             }
         }
+
+        /* ─── Painel de Atraso Bluetooth ─── */
+        #btDelayPanel {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            background: var(--ctrl-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 18px 12px;
+            margin-bottom: 16px;
+            width: 100%;
+            max-width: 520px;
+            animation: btSlideIn 0.2s cubic-bezier(.34,1.56,.64,1);
+        }
+
+        #btDelayPanel.visible {
+            display: flex;
+        }
+
+        @keyframes btSlideIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .bt-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .bt-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .bt-panel-title svg {
+            color: #3b82f6;
+        }
+
+        .bt-slider-row {
+            display: flex;
+            align-items: center;
+        }
+
+        #btDelaySlider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #3b82f6 0%, #3b82f6 var(--pct, 0%), var(--border, #d4c5ae) var(--pct, 0%), var(--border, #d4c5ae) 100%);
+            outline: none;
+            cursor: pointer;
+            touch-action: none;
+        }
+
+        #btDelaySlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 3px solid #fff;
+            box-shadow: 0 1px 6px rgba(59,130,246,0.5);
+            cursor: pointer;
+        }
+
+        #btDelaySlider::-moz-range-thumb {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 3px solid #fff;
+            box-shadow: 0 1px 6px rgba(59,130,246,0.5);
+            cursor: pointer;
+        }
+
+        .bt-delay-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #3b82f6;
+            min-width: 60px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .bt-hint {
+            font-size: 11px;
+            color: var(--text-sub);
+            line-height: 1.4;
+        }
+
+        #btnBluetooth {
+            background-color: #3b82f6;
+            color: #fff;
+        }
+
+        #btnBluetooth:hover {
+            background-color: #2563eb;
+        }
+
+        #btnBluetooth.active {
+            background-color: #1d4ed8 !important;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 
@@ -1186,7 +1297,32 @@
                     <span>SOLO</span>
                 </button>
 
+                <!-- Bluetooth -->
+                <button class="btn" id="btnBluetooth" title="Ajuste de atraso para fones Bluetooth">
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;" viewBox="0 0 24 24">
+                        <polyline points="6.5 6.5 17.5 17.5 12 23 12 1 17.5 6.5 6.5 17.5"></polyline>
+                    </svg>
+                    <span>Atraso BT</span>
+                </button>
+
                 <div id="partsPanel" class="parts-panel" style="display:none;"></div>
+            </div>
+
+            <!-- Painel de atraso Bluetooth (inline, abaixo dos botões) -->
+            <div id="btDelayPanel">
+                <div class="bt-panel-header">
+                    <div class="bt-panel-title">
+                        <svg style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;" viewBox="0 0 24 24">
+                            <polyline points="6.5 6.5 17.5 17.5 12 23 12 1 17.5 6.5 6.5 17.5"></polyline>
+                        </svg>
+                        Atraso Bluetooth
+                    </div>
+                    <span class="bt-delay-value" id="btDelayValue">0 ms</span>
+                </div>
+                <div class="bt-slider-row">
+                    <input type="range" id="btDelaySlider" min="0" max="2000" step="50" value="0">
+                </div>
+                <div class="bt-hint">Atrasa o visual para sincronizar com fones Bluetooth — passos de 50 ms até 2000 ms.</div>
             </div>
 
             <!-- Fingerboard Virtual Atualizado com Mostrador Lateral -->
@@ -1309,6 +1445,7 @@
             var originalXmlBpm = null;
             var currentHymnIndex = 0;
             var soloActive = false;
+            var btDelayMs = 0; // Atraso Bluetooth em milissegundos
 
 
             /* ─── Fingerboard Logic ─── */
@@ -1985,7 +2122,7 @@
                     }
                     if (now - lastTime >= 60) {
                         lastTime = now;
-                        var current = ac.currentTime - sat;
+                        var current = ac.currentTime - sat - (btDelayMs / 1000);
 
                         // Se estivermos na fase de contagem (tempo negativo ou anterior ao offset), mantém visual parado
                         if (current < playbackStartOffset - 0.01) {
@@ -2556,6 +2693,42 @@
                 this.classList.toggle('active', soloActive);
                 updatePartMix();
             };
+
+            /* ─── Painel Bluetooth ─── */
+            (function () {
+                var panel = document.getElementById('btDelayPanel');
+                var btn = document.getElementById('btnBluetooth');
+                var slider = document.getElementById('btDelaySlider');
+                var valueLabel = document.getElementById('btDelayValue');
+
+                function updateSliderTrack() {
+                    var pct = (slider.value / slider.max) * 100;
+                    slider.style.setProperty('--pct', pct + '%');
+                }
+
+                btn.onclick = function () {
+                    var isOpen = panel.classList.toggle('visible');
+                    btn.classList.toggle('active', isOpen);
+                };
+
+                slider.oninput = function () {
+                    btDelayMs = parseInt(this.value);
+                    valueLabel.textContent = btDelayMs + ' ms';
+                    updateSliderTrack();
+                    try { localStorage.setItem('btDelayMs', btDelayMs); } catch(_) {}
+                };
+
+                // Restaurar valor salvo
+                try {
+                    var saved = localStorage.getItem('btDelayMs');
+                    if (saved !== null) {
+                        btDelayMs = parseInt(saved) || 0;
+                        slider.value = btDelayMs;
+                        valueLabel.textContent = btDelayMs + ' ms';
+                    }
+                } catch(_) {}
+                updateSliderTrack();
+            })();
 
 
         })();
