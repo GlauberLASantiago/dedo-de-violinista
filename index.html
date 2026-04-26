@@ -943,7 +943,7 @@
             margin-bottom: 16px;
             width: 100%;
             max-width: 520px;
-            animation: btSlideIn 0.2s cubic-bezier(.34,1.56,.64,1);
+            animation: btSlideIn 0.2s cubic-bezier(.34, 1.56, .64, 1);
         }
 
         #btDelayPanel.visible {
@@ -951,8 +951,15 @@
         }
 
         @keyframes btSlideIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .bt-panel-header {
@@ -999,7 +1006,7 @@
             border-radius: 50%;
             background: #3b82f6;
             border: 3px solid #fff;
-            box-shadow: 0 1px 6px rgba(59,130,246,0.5);
+            box-shadow: 0 1px 6px rgba(59, 130, 246, 0.5);
             cursor: pointer;
         }
 
@@ -1009,7 +1016,7 @@
             border-radius: 50%;
             background: #3b82f6;
             border: 3px solid #fff;
-            box-shadow: 0 1px 6px rgba(59,130,246,0.5);
+            box-shadow: 0 1px 6px rgba(59, 130, 246, 0.5);
             cursor: pointer;
         }
 
@@ -1039,7 +1046,7 @@
 
         #btnBluetooth.active {
             background-color: #1d4ed8 !important;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
@@ -1075,53 +1082,53 @@
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <div id="focusModeBar">
                     <div class="focus-group-left">
-                    <button class="load-btn btn-hymn" onclick="document.getElementById('btnPrevHymn').click()"
-                        title="Hino Anterior" style="padding:0 14px; min-width:auto; margin-right:2px;">
-                        <svg class="icon-svg"
-                            style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
-                            viewBox="0 0 24 24">
-                            <polyline points="15 18 9 12 15 6"></polyline>
-                        </svg>
-                    </button>
-                    <div class="hymn-wrap" style="position: relative;">
-                        <select id="hymnSelectFocus" class="load-btn btn-hymn"
-                            style="appearance: none; padding: 0 28px 0 12px; width: 100px; border: none; outline: none; cursor: pointer;">
-                            <option value="">📖 HNC...</option>
-                        </select>
-                        <svg class="icon-svg"
-                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 14px; height: 14px; color: #fff;"
-                            viewBox="0 0 24 24">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </div>
-                    <button class="load-btn btn-hymn" onclick="document.getElementById('btnNextHymn').click()"
-                        title="Próximo Hino" style="padding:0 14px; min-width:auto; margin-left:2px;">
-                        <svg class="icon-svg"
-                            style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
-                            viewBox="0 0 24 24">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </button>
+                        <button class="load-btn btn-hymn" onclick="document.getElementById('btnPrevHymn').click()"
+                            title="Hino Anterior" style="padding:0 14px; min-width:auto; margin-right:2px;">
+                            <svg class="icon-svg"
+                                style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
+                                viewBox="0 0 24 24">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <div class="hymn-wrap" style="position: relative;">
+                            <select id="hymnSelectFocus" class="load-btn btn-hymn"
+                                style="appearance: none; padding: 0 28px 0 12px; width: 100px; border: none; outline: none; cursor: pointer;">
+                                <option value="">📖 HNC...</option>
+                            </select>
+                            <svg class="icon-svg"
+                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 14px; height: 14px; color: #fff;"
+                                viewBox="0 0 24 24">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <button class="load-btn btn-hymn" onclick="document.getElementById('btnNextHymn').click()"
+                            title="Próximo Hino" style="padding:0 14px; min-width:auto; margin-left:2px;">
+                            <svg class="icon-svg"
+                                style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;"
+                                viewBox="0 0 24 24">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
 
                     </div>
 
                     <div class="focus-group-center">
-                    <button class="btn btn-play" id="bpFocus" onclick="document.getElementById('bp').click()"
-                        title="Tocar">
-                        <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                    </button>
+                        <button class="btn btn-play" id="bpFocus" onclick="document.getElementById('bp').click()"
+                            title="Tocar">
+                            <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                        </button>
                     </div>
 
                     <div class="focus-group-right">
-                    <button id="btnExitFocus" style="display:none;" title="Sair do Modo Foco">
-                        <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;"
-                            viewBox="0 0 24 24">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
+                        <button id="btnExitFocus" style="display:none;" title="Sair do Modo Foco">
+                            <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;"
+                                viewBox="0 0 24 24">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1213,6 +1220,12 @@
                     <input type="checkbox" id="metCheck" checked>
                 </div>
 
+                <!-- Pular Pausas -->
+                <div class="met-wrap" title="Pula múltiplos compassos vazios (pausas longas) mantendo apenas 1 compasso de pausa">
+                    <label for="skipRestsCheck">Pular Pausas</label>
+                    <input type="checkbox" id="skipRestsCheck" checked>
+                </div>
+
                 <!-- Trecho -->
                 <div class="range-wrap" title="Definir trecho para execução">
                     <label>Trecho</label>
@@ -1299,7 +1312,8 @@
 
                 <!-- Bluetooth -->
                 <button class="btn" id="btnBluetooth" title="Ajuste de atraso para fones Bluetooth">
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;" viewBox="0 0 24 24">
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;"
+                        viewBox="0 0 24 24">
                         <polyline points="6.5 6.5 17.5 17.5 12 23 12 1 17.5 6.5 6.5 17.5"></polyline>
                     </svg>
                     <span>Atraso BT</span>
@@ -1312,7 +1326,8 @@
             <div id="btDelayPanel">
                 <div class="bt-panel-header">
                     <div class="bt-panel-title">
-                        <svg style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;" viewBox="0 0 24 24">
+                        <svg style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;"
+                            viewBox="0 0 24 24">
                             <polyline points="6.5 6.5 17.5 17.5 12 23 12 1 17.5 6.5 6.5 17.5"></polyline>
                         </svg>
                         Atraso Bluetooth
@@ -1322,7 +1337,8 @@
                 <div class="bt-slider-row">
                     <input type="range" id="btDelaySlider" min="0" max="1200" step="50" value="0">
                 </div>
-                <div class="bt-hint">Atrasa o visual para sincronizar com fones Bluetooth — passos de 50 ms até 1200 ms.</div>
+                <div class="bt-hint">Atrasa o visual para sincronizar com fones Bluetooth — passos de 50 ms até 1200 ms.
+                </div>
             </div>
 
             <!-- Fingerboard Virtual Atualizado com Mostrador Lateral -->
@@ -1391,11 +1407,13 @@
                 tocar em loop (para você poder praticar várias vezes sem ter que soltar o instrumento);
                 utilizar som de violino (e não o de piano);
                 exibir a "guia visual" da digitação selecionada para o primeiro pentagrama do sistema; e
-                reproduzir todos os instrumentos (e não em solo). Se for utilizar dispositivos Bluetooth e tiver com atrazo no áudio, utilize o botão específico para calibrar.</p>
+                reproduzir todos os instrumentos (e não em solo). Se for utilizar dispositivos Bluetooth e tiver com
+                atrazo no áudio, utilize o botão específico para calibrar.</p>
             <p style="margin-top:12px;">Depois, você pode alterar todas essas configurações.</p>
             <p style="margin-top:12px;">Para visualizar melhor a partitura, clique no botão <b>"Foco"</b>.</p>
             <p style="margin-top:12px;"><b>Para abrir uma nova música:</b>
-                Selecione um arquivo de partitura (.mxl, .musicxml) do seu dispositivo no botão de pasta ou utilize o menu HNC para carregar hinos do hinário Novo Cântico diretamente da nossa biblioteca pública.</p>
+                Selecione um arquivo de partitura (.mxl, .musicxml) do seu dispositivo no botão de pasta ou utilize o
+                menu HNC para carregar hinos do hinário Novo Cântico diretamente da nossa biblioteca pública.</p>
         </div>
     </section>
 
@@ -1686,14 +1704,21 @@
             /* ─── Range state ─────────────────────────────────────────── */
             var rangeFrom = 1, rangeTo = 1;
             var measureTimeMap = {};
+            var rawMeasureTimeArray = [];
+            var emptyMeasures = []; // Adicionado para rastrear compassos vazios diretamente do Iterator
+            var skipMeasuresList = [];
+            var totalMeasures = 0;
+
             var measureTimeArray = [];
             var minMeasureNumber = 1;
             var maxMeasureNumber = 1;
 
-            function buildMeasureTimeMap() {
-                measureTimeMap = {};
-                measureTimeArray = [];
-                metronomeAnchorTime = 0;
+            var rawEvs = [];
+            var rawPieceEnd = 0;
+
+            function buildRawMeasureTimeMap() {
+                rawMeasureTimeArray = [];
+                emptyMeasures = [];
                 minMeasureNumber = 1;
                 maxMeasureNumber = 1;
                 if (!osmd || !osmd.cursor) return;
@@ -1703,44 +1728,165 @@
                     osmd.cursor.reset();
                     var it = osmd.cursor.Iterator;
                     var lastM = -1;
+                    var isSubsequentMultipleRest = false;
                     while (!it.EndReached) {
                         var mIdx = it.CurrentMeasureIndex;
                         if (mIdx !== lastM) {
+                            if (lastM !== -1) {
+                                emptyMeasures.push(isSubsequentMultipleRest);
+                            }
                             var timeObj = it.currentTimeStamp || it.CurrentTimeStamp;
                             var real = timeObj ? (typeof timeObj.realValue !== 'undefined' ? timeObj.realValue : (timeObj.RealValue || 0)) : 0;
                             var measureNumber = mIdx + 1;
+                            isSubsequentMultipleRest = false;
                             if (osmd.Sheet && osmd.Sheet.SourceMeasures && osmd.Sheet.SourceMeasures.length > mIdx) {
                                 var srcMeasure = osmd.Sheet.SourceMeasures[mIdx];
                                 if (srcMeasure && srcMeasure.MeasureNumber !== undefined) {
                                     measureNumber = srcMeasure.MeasureNumber;
                                 }
+                                // Simplificação extrema a pedido do usuário: pular APENAS as pausas de múltiplos compassos (ex: bloco com número 7)
+                                // Em OSMD, esses compassos recebem um número identificador sequencial maior que 1
+                                if (srcMeasure && srcMeasure.multipleRestMeasureNumber > 1) {
+                                    isSubsequentMultipleRest = true;
+                                }
                             }
-                            if (measureTimeMap[measureNumber] === undefined) {
-                                measureTimeMap[measureNumber] = real * 4 * beatLen;
-                            }
-                            measureTimeArray.push({ index: mIdx, m: measureNumber, t: real * 4 * beatLen });
-
+                            rawMeasureTimeArray.push({ index: mIdx, m: measureNumber, t: real * 4 * beatLen });
                             if (lastM === -1) minMeasureNumber = measureNumber;
                             maxMeasureNumber = measureNumber;
                             lastM = mIdx;
                         }
                         it.moveToNext();
                     }
-                    osmd.cursor.reset();
-
-                    // Define a âncora do metrônomo (o início do primeiro compasso "cheio")
-                    // Se o primeiro compasso for uma anacruse, o segundo compasso (index 1) será a nossa âncora de batida.
-                    if (measureTimeArray.length > 1) {
-                        // Verifica se o primeiro compasso parece ser uma anacruse (tempo de compasso 2 != múltiplo exato de beatLen)
-                        var firstMeasureDur = measureTimeArray[1].t;
-                        var isAnacrusis = (Math.abs(firstMeasureDur % beatLen) > 0.01);
-                        metronomeAnchorTime = isAnacrusis ? firstMeasureDur : 0;
+                    if (lastM !== -1) {
+                        emptyMeasures.push(isSubsequentMultipleRest);
                     }
-
+                    osmd.cursor.reset();
                     totalMeasures = maxMeasureNumber;
                 } catch (e) {
-                    console.warn('buildMeasureTimeMap error:', e);
+                    console.warn('buildRawMeasureTimeMap error:', e);
                 }
+            }
+
+            function extractRawEvents() {
+                rawEvs = []; rawPieceEnd = 0;
+                if (!osmd || !osmd.cursor) return;
+                var bpm = +document.getElementById('bpm').value || 100, beatLen = 60 / bpm;
+                var instIdMap = {};
+                if (osmd.Sheet && osmd.Sheet.Instruments) {
+                    for (var m = 0; m < osmd.Sheet.Instruments.length; m++) {
+                        var inst = osmd.Sheet.Instruments[m];
+                        if (inst.Id !== undefined) instIdMap[inst.Id] = m;
+                    }
+                }
+                try {
+                    osmd.cursor.reset();
+                    var iterator = osmd.cursor.Iterator;
+                    while (!iterator.EndReached) {
+                        var voices = iterator.CurrentVoiceEntries || [];
+                        var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
+                        var real = timeObj ? (typeof timeObj.realValue !== 'undefined' ? timeObj.realValue : (timeObj.RealValue || 0)) : 0;
+                        var tSec = real * 4 * beatLen;
+                        for (var i = 0; i < voices.length; i++) {
+                            var ve = voices[i]; if (!ve || !ve.Notes) continue;
+                            var partIdx = 0;
+                            try {
+                                if (ve.ParentVoice && ve.ParentVoice.Parent) {
+                                    var instObj = ve.ParentVoice.Parent;
+                                    if (!instObj.NameLabel && instObj.ParentInstrument) instObj = instObj.ParentInstrument;
+                                    if (instObj && osmd.Sheet.Instruments) {
+                                        var idx = osmd.Sheet.Instruments.indexOf(instObj);
+                                        if (idx < 0 && instObj.Id !== undefined && instIdMap[instObj.Id] !== undefined) idx = instIdMap[instObj.Id];
+                                        if (idx >= 0) partIdx = idx;
+                                    }
+                                }
+                            } catch (e) { }
+                            for (var j = 0; j < ve.Notes.length; j++) {
+                                var note = ve.Notes[j];
+                                if (!note || note.isRest()) continue;
+                                if (isTieContinuation(note)) continue;
+                                var midi = getMidiPitch(note); if (midi === null) continue;
+                                var dur = getTiedDuration(note, beatLen);
+                                rawEvs.push({ t: tSec, midi: midi, dur: dur, part: partIdx });
+                                if (tSec + dur > rawPieceEnd) rawPieceEnd = tSec + dur;
+                            }
+                        }
+                        iterator.moveToNext();
+                    }
+                    rawEvs.sort(function (a, b) { return a.t - b.t; });
+                    osmd.cursor.reset();
+                } catch(e) {
+                    console.warn('extractRawEvents error:', e);
+                }
+            }
+
+            function calculateSkipMap() {
+                skipMeasuresList = [];
+                var skipCheck = document.getElementById('skipRestsCheck');
+                if (!skipCheck || !skipCheck.checked) return;
+
+                for (var i = 0; i < emptyMeasures.length; i++) {
+                    if (emptyMeasures[i]) {
+                        var mStart = rawMeasureTimeArray[i].t;
+                        var lastDur = (i > 0) ? (mStart - rawMeasureTimeArray[i-1].t) : (4 * 60 / (+document.getElementById('bpm').value || 100));
+                        var mEnd = (i + 1 < rawMeasureTimeArray.length) ? rawMeasureTimeArray[i+1].t : Math.max(rawPieceEnd, mStart + lastDur);
+                        if (mEnd > mStart) {
+                            skipMeasuresList.push({ start: mStart, end: mEnd, duration: mEnd - mStart });
+                        }
+                    }
+                }
+            }
+
+            function getAdjustedTime(t) {
+                var adj = t;
+                for (var i = 0; i < skipMeasuresList.length; i++) {
+                    var sm = skipMeasuresList[i];
+                    if (t >= sm.end - 0.001) {
+                        adj -= sm.duration;
+                    } else if (t > sm.start) {
+                        adj -= (t - sm.start);
+                    }
+                }
+                return adj;
+            }
+
+            function applySkipMap() {
+                measureTimeArray = [];
+                measureTimeMap = {};
+                for (var i = 0; i < rawMeasureTimeArray.length; i++) {
+                    var rm = rawMeasureTimeArray[i];
+                    var adjT = getAdjustedTime(rm.t);
+                    measureTimeArray.push({ index: rm.index, m: rm.m, t: adjT });
+                    if (measureTimeMap[rm.m] === undefined) {
+                        measureTimeMap[rm.m] = adjT;
+                    }
+                }
+
+                evs = [];
+                pieceEnd = getAdjustedTime(rawPieceEnd);
+                for (var i = 0; i < rawEvs.length; i++) {
+                    var re = rawEvs[i];
+                    var startAdj = getAdjustedTime(re.t);
+                    evs.push({ t: startAdj, midi: re.midi, dur: re.dur, part: re.part });
+                }
+
+                var bpm = +document.getElementById('bpm').value || 100;
+                var beatLen = 60 / bpm;
+                metronomeAnchorTime = 0;
+                if (measureTimeArray.length > 1) {
+                    var firstMeasureDur = measureTimeArray[1].t;
+                    var isAnacrusis = (Math.abs(firstMeasureDur % beatLen) > 0.01);
+                    metronomeAnchorTime = isAnacrusis ? firstMeasureDur : 0;
+                }
+            }
+
+            function updateTimings() {
+                if(!osmd || !osmd.cursor) return;
+                buildRawMeasureTimeMap();
+                extractRawEvents();
+                calculateSkipMap();
+                applySkipMap();
+                extractCursorSteps();
+                updateRangeInputs();
             }
 
             function updateRangeInputs() {
@@ -1954,8 +2100,8 @@
                 if (sBtn) sBtn.style.display = (parts.length > 1) ? 'inline-flex' : 'none';
 
 
-                buildMeasureTimeMap();
-                updateRangeInputs();
+                updateTimings();
+                // updateRangeInputs(); already inside updateTimings
                 document.getElementById('rangeFrom').disabled = false;
                 document.getElementById('rangeTo').disabled = false;
 
@@ -2058,7 +2204,7 @@
                 var bpm = +document.getElementById('bpm').value || 100;
                 var mode = +document.getElementById('cursorMode').value;
                 if (mode === -1) { cursorSteps = []; return; }
-                if (cursorStepsCache.bpm === bpm && cursorStepsCache.xml === rawXml && cursorStepsCache.mode === mode && cursorSteps.length > 0) return;
+                if (cursorStepsCache.bpm === bpm && cursorStepsCache.xml === rawXml && cursorStepsCache.mode === mode && cursorStepsCache.skip === document.getElementById('skipRestsCheck').checked && cursorSteps.length > 0) return;
                 cursorSteps = [];
                 try {
                     osmd.cursor.reset();
@@ -2077,13 +2223,15 @@
                                     measureNumber = srcMeasure.MeasureNumber;
                                 }
                             }
-                            cursorSteps.push({ t: real * 4 * (60 / bpm), m: mIdx, measureNumber: measureNumber });
+                            var rawT = real * 4 * (60 / bpm);
+                            var adjT = getAdjustedTime(rawT);
+                            cursorSteps.push({ t: adjT, m: mIdx, measureNumber: measureNumber });
                             lastM = mIdx;
                         }
                         iterator.moveToNext();
                     }
                     osmd.cursor.reset();
-                    cursorStepsCache.bpm = bpm; cursorStepsCache.xml = rawXml; cursorStepsCache.mode = mode;
+                    cursorStepsCache.bpm = bpm; cursorStepsCache.xml = rawXml; cursorStepsCache.mode = mode; cursorStepsCache.skip = document.getElementById('skipRestsCheck').checked;
                 } catch (_) { }
             }
 
@@ -2228,52 +2376,6 @@
             /* ─── Event extraction ───────────────────────────────────────────── */
             var eventsCache = { bpm: null, evs: [], pieceEnd: 0 };
 
-            function extractEvents() {
-                evs = []; pieceEnd = 0;
-                var bpm = +document.getElementById('bpm').value || 100, beatLen = 60 / bpm;
-                var instIdMap = {};
-                if (osmd.Sheet && osmd.Sheet.Instruments) {
-                    for (var m = 0; m < osmd.Sheet.Instruments.length; m++) {
-                        var inst = osmd.Sheet.Instruments[m];
-                        if (inst.Id !== undefined) instIdMap[inst.Id] = m;
-                    }
-                }
-                osmd.cursor.reset();
-                var iterator = osmd.cursor.Iterator;
-                while (!iterator.EndReached) {
-                    var voices = iterator.CurrentVoiceEntries || [];
-                    var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
-                    var real = timeObj ? (typeof timeObj.realValue !== 'undefined' ? timeObj.realValue : (timeObj.RealValue || 0)) : 0;
-                    var tSec = real * 4 * beatLen;
-                    for (var i = 0; i < voices.length; i++) {
-                        var ve = voices[i]; if (!ve || !ve.Notes) continue;
-                        var partIdx = 0;
-                        try {
-                            if (ve.ParentVoice && ve.ParentVoice.Parent) {
-                                var instObj = ve.ParentVoice.Parent;
-                                if (!instObj.NameLabel && instObj.ParentInstrument) instObj = instObj.ParentInstrument;
-                                if (instObj && osmd.Sheet.Instruments) {
-                                    var idx = osmd.Sheet.Instruments.indexOf(instObj);
-                                    if (idx < 0 && instObj.Id !== undefined && instIdMap[instObj.Id] !== undefined) idx = instIdMap[instObj.Id];
-                                    if (idx >= 0) partIdx = idx;
-                                }
-                            }
-                        } catch (e) { }
-                        for (var j = 0; j < ve.Notes.length; j++) {
-                            var note = ve.Notes[j];
-                            if (!note || note.isRest()) continue;
-                            if (isTieContinuation(note)) continue;
-                            var midi = getMidiPitch(note); if (midi === null) continue;
-                            var dur = getTiedDuration(note, beatLen);
-                            evs.push({ t: tSec, midi: midi, dur: dur, part: partIdx });
-                            if (tSec + dur > pieceEnd) pieceEnd = tSec + dur;
-                        }
-                    }
-                    iterator.moveToNext();
-                }
-                evs.sort(function (a, b) { return a.t - b.t; });
-            }
-
             async function scheduleMetronome(offset) {
                 if (!document.getElementById('metCheck').checked) return;
                 var beatLen = getMetronomeBeatLen();
@@ -2329,7 +2431,6 @@
             }
 
             async function scheduleFrom(offset) {
-                extractEvents();
                 if (!evs.length) { return; }
                 if (ac.state === 'suspended') await ac.resume();
                 updateReverb(); stopScheduled(); clearPlaybackEndTimer();
@@ -2374,7 +2475,9 @@
 
             async function afterXmlLoaded() {
                 originalXmlBpm = extractTempoFromXml(rawXml);
-                if (originalXmlBpm) {
+                var hasState = (typeof EMBEDDED_STATE !== 'undefined' && EMBEDDED_STATE !== null);
+
+                if (originalXmlBpm && !hasState) {
                     var reduce = document.getElementById('bpmRedCheck').checked;
                     document.getElementById('bpm').value = reduce ? Math.max(20, originalXmlBpm - 30) : originalXmlBpm;
                 }
@@ -2383,21 +2486,49 @@
 
                 // Ajuste de zoom proporcional para mobile no carregamento inicial
                 var zoomEl = document.getElementById('zoomInp');
-                if (window.innerWidth < 768 && zoomEl.value == "100") {
+                if (!hasState && window.innerWidth < 768 && zoomEl.value == "100") {
                     zoomEl.value = "50";
                 }
+
+                if (hasState) {
+                    document.getElementById('bpm').value = EMBEDDED_STATE.bpm;
+                    document.getElementById('bpmRedCheck').checked = EMBEDDED_STATE.bpmRedCheck;
+                    document.getElementById('countInSelect').value = EMBEDDED_STATE.countInSelect;
+                    document.getElementById('metCheck').checked = EMBEDDED_STATE.metCheck;
+                    document.getElementById('loopCheck').checked = EMBEDDED_STATE.loopCheck;
+                    if (document.getElementById('skipRestsCheck') && EMBEDDED_STATE.skipRestsCheck !== undefined) {
+                        document.getElementById('skipRestsCheck').checked = EMBEDDED_STATE.skipRestsCheck;
+                    }
+                    document.getElementById('cursorMode').value = EMBEDDED_STATE.cursorMode;
+                    zoomEl.value = EMBEDDED_STATE.zoomInp;
+                    document.getElementById('reverbAmt').value = EMBEDDED_STATE.reverbAmt;
+                    document.getElementById('instSelect').value = EMBEDDED_STATE.instSelect;
+                }
+
                 osmd.Zoom = (+zoomEl.value || 100) / 100;
 
                 osmd.render();
                 buildXmlNoteMap(rawXml); // Parser manual MusicXML — constrói mapa de notas do Staff 1
 
-                resetCursorToStart(); extractCursorSteps();
+                updateTimings();
+                resetCursorToStart();
                 if (ac && ac.state !== 'closed') { try { await ac.close(); } catch (_) { } }
                 ac = new (window.AudioContext || window.webkitAudioContext)();
                 setupFx(); initParts();
-                buildMeasureTimeMap();
-                updateRangeInputs();
-                sat = 0; pat = 0; run = false; evs = []; sc = []; pieceEnd = 0;
+
+                if (hasState) {
+                    var guideSel = document.getElementById('guidePartSelect');
+                    if (guideSel && EMBEDDED_STATE.guidePartSelect !== undefined) {
+                        guideSel.value = EMBEDDED_STATE.guidePartSelect;
+                    }
+                    if (EMBEDDED_STATE.soloActive !== undefined) {
+                        soloActive = EMBEDDED_STATE.soloActive;
+                        var btnSolo = document.getElementById('btnSolo');
+                        if (btnSolo) btnSolo.classList.toggle('active', soloActive);
+                    }
+                }
+
+                sat = 0; pat = 0; run = false; pieceEnd = evs.length ? pieceEnd : 0;
                 clearPlaybackEndTimer();
                 ['bp', 'reverbAmt', 'rangeFrom', 'rangeTo', 'countInSelect', 'loopCheck', 'btnExport'].forEach(function (id) {
                     var el = document.getElementById(id);
@@ -2539,8 +2670,24 @@
 
                 var fileName = (document.getElementById('fname').textContent || 'dedo-de-violinista').replace(/\s+/g, '_') + '.html';
 
-                // Injeta o XML no lugar do placeholder ou no primeiro script
-                var scriptToInject = 'var EMBEDDED_XML = ' + JSON.stringify(rawXml) + ';';
+                var currentState = {
+                    bpm: document.getElementById('bpm').value,
+                    bpmRedCheck: document.getElementById('bpmRedCheck').checked,
+                    countInSelect: document.getElementById('countInSelect').value,
+                    metCheck: document.getElementById('metCheck').checked,
+                    skipRestsCheck: document.getElementById('skipRestsCheck') ? document.getElementById('skipRestsCheck').checked : true,
+                    loopCheck: document.getElementById('loopCheck').checked,
+                    cursorMode: document.getElementById('cursorMode').value,
+                    zoomInp: document.getElementById('zoomInp').value,
+                    reverbAmt: document.getElementById('reverbAmt').value,
+                    instSelect: document.getElementById('instSelect').value,
+                    guidePartSelect: document.getElementById('guidePartSelect').value,
+                    soloActive: typeof soloActive !== 'undefined' ? soloActive : false
+                };
+
+                // Injeta o XML e o Estado no lugar do placeholder ou no primeiro script
+                var scriptToInject = 'var EMBEDDED_XML = ' + JSON.stringify(rawXml) + ';\n' +
+                                     'var EMBEDDED_STATE = ' + JSON.stringify(currentState) + ';';
                 var finalHtml = source.replace(/var EMBEDDED_XML = ``; \/\/ @EMBEDDED_XML_PLACEHOLDER@/, scriptToInject);
 
                 // Garantia caso o comentário do placeholder tenha sumido no outerHTML
@@ -2614,7 +2761,15 @@
             document.getElementById('bpm').onchange = function () {
                 if (!rawXml) return;
                 if (run) stopPlayback();
-                buildMeasureTimeMap();
+                updateTimings();
+            };
+
+            document.getElementById('skipRestsCheck').onchange = function () {
+                if (!rawXml) return;
+                var wasRunning = run;
+                if (wasRunning) stopPlayback();
+                updateTimings();
+                moveCursorToTime(pat || 0);
             };
 
             document.getElementById('bpmRedCheck').onchange = function () {
@@ -2715,18 +2870,9 @@
                     btDelayMs = parseInt(this.value);
                     valueLabel.textContent = btDelayMs + ' ms';
                     updateSliderTrack();
-                    try { localStorage.setItem('btDelayMs', btDelayMs); } catch(_) {}
                 };
 
-                // Restaurar valor salvo
-                try {
-                    var saved = localStorage.getItem('btDelayMs');
-                    if (saved !== null) {
-                        btDelayMs = parseInt(saved) || 0;
-                        slider.value = btDelayMs;
-                        valueLabel.textContent = btDelayMs + ' ms';
-                    }
-                } catch(_) {}
+                // Removido o carregamento de localStorage
                 updateSliderTrack();
             })();
 
